@@ -1,0 +1,9 @@
+Parameters:
+  path_to_features: 
+  path_to_all_scenarios_document_txt:
+  path_to_contract_tests:
+  platforms: 
+  report_name: 
+  unit_test_document_ios: 
+  unit_test_document_android: 
+  
