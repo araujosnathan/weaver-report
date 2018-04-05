@@ -1,25 +1,26 @@
 #!/bin/bash
 
+source functional_tests_datas.sh
 
 function setup_envs()
 {
-  PATH_TO_FEATURES=$(cat weaver-report-config.yml | grep path_to_features | awk '{print $2}')
-  PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS=$(cat weaver-report-config.yml | grep path_to_all_scenarios_document_txt | awk '{print $2}')
+  # PATH_TO_FEATURES=$(cat weaver-report-config.yml | grep path_to_features | awk '{print $2}')
+  # PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS=$(cat weaver-report-config.yml | grep path_to_all_scenarios_document_txt | awk '{print $2}')
   FILE_HTML="file_html.txt"
   FILE_METRICS="file_metrics.txt"
   FILE_BUGS_JS="file_bugs.txt"
   FILE_BUGS_FLAGGED="file_bugs_flagged.txt"
   FILE_CURRENT_BUGS_METRIC="bugs_metric.txt"
-  PATH_TESTS=$(cat weaver-report-config.yml | grep path_to_contract_tests | awk '{print $2}')
+  PATH_TESTS=$(cat config.yml | grep path_to_contract_tests | awk '{print $2}')
   FILE_LIST_PATHS='list_paths.txt'
   FILE_LIST_SCENARIOS=' list_scenarios.txt'
-  REPORT_NAME=$(cat weaver-report-config.yml | grep report_name | awk '{print $2}')
-  PLATFORMS=$(cat weaver-report-config.yml | grep platforms | awk '{print $2}')
+  REPORT_NAME=$(cat config.yml | grep report_name | awk '{print $2}')
+  PLATFORMS=$(cat config.yml | grep platforms | awk '{print $2}')
   PLATFORM_REPORT=""
   BUG_PLATFORM_REPORT=""
   CHART_INIT=""
-  UNIT_TEST_DOC=$(cat weaver-report-config.yml | grep unit_test_document_ios | awk '{print $2}')
-  UNIT_TEST_DOC_ANDROID=$(cat weaver-report-config.yml | grep unit_test_document_android | awk '{print $2}')
+  UNIT_TEST_DOC=$(cat config.yml | grep unit_test_document_ios | awk '{print $2}')
+  UNIT_TEST_DOC_ANDROID=$(cat config.yml | grep unit_test_document_android | awk '{print $2}')
   ALL_METRICS=""
   FILE_SPRINTS_METRICS="sprints_metrics.txt"
   FILE_SPRINTS_BUGS="sprints_bugs.txt"
@@ -164,79 +165,11 @@ function set_bugs_flagged_chart
   echo "</div>" >> $FILE_BUGS_FLAGGED
 }
 
-
-function get_all_features_from_testing_project
-{
-  FILE_WITH_ALL_FEATURES="features_from_testing_project.txt"
-  if [ ! -d $PATH_TO_FEATURES ]; then
-    echo -e "\033[31;1mDo not exist any folder: $PATH_TO_FEATURES \nPlease, set correct folder in config.yml!\033[m"
-    exit 1
-  else
-    CONTENT=$(ls $PATH_TO_FEATURES | grep '.feature')
-    if [ -z "$CONTENT" ]; then
-
-      echo -e "\033[31;1mDo not exist any feature in folder: $PATH_TO_FEATURES \nPlease, set correct folder in config.yml!\033[m"
-      exit 1
-    else
-      ls $PATH_TO_FEATURES | grep '.feature' >> $FILE_WITH_ALL_FEATURES
-    fi
-  fi
-}
-
-function get_feature_name
-{
-  FEATURE_NAME=$(cat $PATH_TO_FEATURES$LINE   | grep Funcionalidade: | awk '{print $2}')
-}
-
-function get_total_number_of_scenarios_by_feature
-{
-  SCENARIOS_TOTAL_BY_FEATURE=$(cat $PATH_TO_FEATURES$LINE  | grep @$PLATFORM_NAME -A1 | grep Cenário | wc -l)
-  SCENARIOS_TOTAL_BY_FEATURE=$(echo $SCENARIOS_TOTAL_BY_FEATURE | tr -d ' ')
-}
-
-function get_total_number_of_scenarios_from_project
-{
-  SCENARIOS_TOTAL_OF_PROJECT=$(($SCENARIOS_TOTAL_OF_PROJECT+$SCENARIOS_TOTAL_BY_FEATURE))
-}
-
-function get_scenario_names_by_feature
-{
-  FILE_WITH_SCENARIO_NAMES_BY_FEATURE="scenarios.txt"
-  cat $PATH_TO_FEATURES$LINE  | grep @$PLATFORM_NAME -A1 | grep Cenário >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
-}
-
-function get_total_number_of_scenarios_from_official_document_by_feature
-{
-   TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep $FEATURE_NAME | wc -l)
-   TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(echo $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE | tr -d ' ')
-}
-
-function get_scenario_names_from_official_document
-{
-  FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT="scenario_doc.txt"
-  cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep $FEATURE_NAME | awk -F"\t" '{print $3}' >> $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
-}
-
-function calculate_coverage_by_feature
-{
-  COVERAGE_BY_FEATURE=$((($SCENARIOS_TOTAL_BY_FEATURE*100)/$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE))
-}
-
-function get_total_number_of_scenarios_from_official_document
-{
-  TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT=$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | wc -l)
-  TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT=$(echo $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT | tr -d ' ')
-}
-
-function calculate_project_coverage
-{
-  PROJECT_COVERAGE=$(echo $SCENARIOS_TOTAL_OF_PROJECT 100 $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT | awk '{print ($1*$2) / $3}')
-  PROJECT_COVERAGE=$(printf %.2f $PROJECT_COVERAGE)
-  PROJECT_COVERAGE=$(echo $PROJECT_COVERAGE | tr "," ".")
-}
 function get_all_datas_functional()
 {
-  
+
+  setup_functional_envs
+
   SCENARIOS_TOTAL_OF_PROJECT=0
 
   get_all_features_from_testing_project
@@ -514,6 +447,6 @@ function generate_weaver_report
 }
 
 
-# setup_envs
-# generate_weaver_report
+setup_envs
+generate_weaver_report
 
