@@ -1,0 +1,9 @@
+Parameters:
+  path_to_features: /Users/nathanael/Documents/weaver-report-refactoring/weaver-report/scripts/tests/project_example/features
+  path_to_all_scenarios_document_txt: /Users/nathanael/Documents/report/cartaobranco_cenarios.txt
+  path_to_contract_tests: /Users/nathanael/Documents/Concrete/Projetos/Cartao_Branco/odete-tests/specs/cartaobranco/contract_testing/
+  platforms: android,ios
+  report_name: CB-Sprint-X
+  unit_test_document_ios: /Users/nathanael/Documents/report/index-2.html
+  unit_test_document_android: /Users/nathanael/Documents/report/index.html
+  
