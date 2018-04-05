@@ -28,6 +28,39 @@ testFolderWithFeatureIsCreated()
     assertTrue "[ -r $FILE_WITH_ALL_FEATURES ]"
 }
 
+testShouldGetFeatureNameinPortuguese()
+{
+  mkdir folder_test
+  touch folder_test/file_test.feature
+  PATH_TO_FEATURES="folder_test/"
+  LINE="file_test.feature"
+  echo "Funcionalidade: FeatureName" >> $PATH_TO_FEATURES$LINE
+  get_feature_name
+  assertEquals "FeatureName" "$FEATURE_NAME"
+}
+
+testShouldGetFeatureNameinEnglish()
+{
+  mkdir folder_test
+  touch folder_test/file_test.feature
+  PATH_TO_FEATURES="folder_test/"
+  LINE="file_test.feature"
+  echo "Feature: FeatureName" >> $PATH_TO_FEATURES$LINE
+  get_feature_name
+  assertEquals "FeatureName" "$FEATURE_NAME"
+}
+
+testShouldGetFeatureNameWithSpaces()
+{
+  mkdir folder_test
+  touch folder_test/file_test.feature
+  PATH_TO_FEATURES="folder_test/"
+  LINE="file_test.feature"
+  echo "Feature: Feature de Name" >> $PATH_TO_FEATURES$LINE
+  get_feature_name
+  assertEquals "Feature de Name" "$FEATURE_NAME"
+}
+
 tearDown()
 {
   rm -rf folder_test

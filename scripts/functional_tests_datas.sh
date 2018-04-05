@@ -26,7 +26,8 @@ function get_all_features_from_testing_project
 
 function get_feature_name
 {
-  FEATURE_NAME=$(cat $PATH_TO_FEATURES$LINE   | grep Funcionalidade: | awk '{print $2}')
+    FEATURE_NAME=$(cat $PATH_TO_FEATURES$LINE   | grep 'Funcionalidade:\|Feature:' | awk '{t=""; for(i=2;i<=NF;i++) t=t" "$i; print t}')
+    FEATURE_NAME=`echo $FEATURE_NAME`
 }
 
 function get_total_number_of_scenarios_by_feature
