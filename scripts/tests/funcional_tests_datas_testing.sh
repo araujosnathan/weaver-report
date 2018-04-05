@@ -147,11 +147,38 @@ testShouldReturnFileWithScenarioNames()
   assertEquals "Cenário: Exemplo 1 de Cenário" "$(cat $FILE_WITH_SCENARIO_NAMES_BY_FEATURE)"
 }
 
+testShouldWarningThatFeatureNotFoundInOfficialDocument()
+{
+  FEATURE_NAME="WrongFeature"
+  PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS="official_document.txt"
+  touch $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
+  echo "ID  Funcionalidade  Cenario" >> $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
+  echo "1 RightFeature  Scenario1" >> $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
+  get_total_number_of_scenarios_from_official_document_by_feature
+  assertEquals "0" "$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE"
+  # assertEquals "$(echo -e "\n\033[33;1mThis feature: '$FEATURE_NAME' was not found in official document of scenarios and it is not possible to generate any metric about that! \033[m")" "$(get_total_number_of_scenarios_from_official_document_by_feature)"
+}
+
+testShoulReturnTotalNumberOfScenariosInOfficialDocumentByFeature()
+{
+  FEATURE_NAME="RightFeature"
+  PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS="official_document.txt"
+  touch $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
+  echo "ID  Funcionalidade  Cenario" >> $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
+  echo "1 RightFeature  Scenario1" >> $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
+  echo "2 RightFeature  Scenario2" >> $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
+  echo "3 AnyFeature  Scenario3" >> $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
+  get_total_number_of_scenarios_from_official_document_by_feature
+  assertEquals "2" "$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE"
+}
+
+
 tearDown()
 {
   rm -rf folder_test
   rm -rf $FILE_WITH_ALL_FEATURES
   rm -rf $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
+  rm -rf $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS
 }
 
 # load shunit2
