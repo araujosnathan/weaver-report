@@ -218,6 +218,22 @@ testShoulReturnTotalNumberOfScenariosInOfficialDocumentByFeature()
   assertEquals "2" "$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE"
 }
 
+testErrorForNotExistOffcialDocumentFile()
+{
+  PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS="official_document.txt"
+  assertEquals "$(echo -e "\033[31;1mIt was not found file: $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS\nPlease, set correct file for Official Document of Scenarios!\033[m" )" "$(check_offical_document_file)"
+}
+
+testErrorForWrongOffcialDocumentTag()
+{
+  touch config.yml
+  echo "Parameters:" >> config.yml
+  echo "path_to_official_document_of_scenario:" >> config.yml
+  assertEquals "$(echo -e "\033[31;1mPlease, set correct tag for Official Document of Scenarios: 'path_to_official_document_of_scenarios' in config.yml\033[m")" "$(check_offical_document_tag)"
+
+}
+
+
 tearDown()
 {
   rm -rf folder_test

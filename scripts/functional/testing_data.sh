@@ -4,6 +4,7 @@ function setup_functional_envs()
 {
     PATH_TO_FEATURES=$(cat config.yml | grep path_to_features | awk '{print $2}')
     PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS=$(cat config.yml | grep path_to_official_document_of_scenarios | awk '{print $2}')
+    SCENARIOS_TOTAL_OF_PROJECT=0
     DEFINITION_OF_DONE_TARGET=70
 }
 
@@ -32,6 +33,23 @@ function get_feature_name
     else
         FEATURE_NAME=$(cat $PATH_TO_FEATURES$LINE   | grep 'Funcionalidade:\|Feature:' | awk '{t=""; for(i=2;i<=NF;i++) t=t" "$i; print t}')
         FEATURE_NAME=`echo $FEATURE_NAME`
+    fi
+}
+
+function check_offical_document_tag
+{
+    CONTENT=$(cat config.yml | grep path_to_official_document_of_scenarios)
+    if [ -z "$CONTENT" ]; then 
+        echo -e "\033[31;1mPlease, set correct tag for Official Document of Scenarios: 'path_to_official_document_of_scenarios' in config.yml\033[m" 
+        exit 1
+    fi
+}
+
+function check_offical_document_file
+{
+    if [ ! -f "$PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS" ]; then
+        echo -e "\033[31;1mIt was not found file: $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS\nPlease, set correct file for Official Document of Scenarios!\033[m" 
+        exit
     fi
 }
 

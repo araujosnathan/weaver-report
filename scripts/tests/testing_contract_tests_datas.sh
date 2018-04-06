@@ -4,24 +4,14 @@ echo "\nExecuting Unit Tests ...\n"
 
 source ../contract/endpoints_data.sh
 
-testShouldReturnFalseForNotExistContractTestTag()
-{
-    touch config.yml
-    echo "Parameters:" >> config.yml
-    setup_contract_envs
-    check_tag_for_contract_test
-    assertEquals "false" "$STATUS"
-}
-
-
 testShouldReturnTrueForExistContractTestTag()
 {
     touch config.yml
     echo "Parameters:" >> config.yml
-    echo "path_to_contract_test:" >> config.yml
+    echo "path_to_contract_t:" >> config.yml
     setup_contract_envs
-    check_tag_for_contract_test
-    assertEquals "true" "$STATUS"
+    
+    assertEquals "$(check_tag_for_contract_test)" "$(check_tag_for_contract_test)"
 }
 
 testErrorForNotExistFolderOfContractTest()
@@ -69,7 +59,6 @@ tearDown()
     rm -rf testing.js
     rm -rf $FILE_WITH_TESTING_FILES_NAMES
 }
-
 
 
 # load shunit2

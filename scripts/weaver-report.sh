@@ -2,6 +2,8 @@
 
 source functional/testing_data.sh
 source functional/setting_html.sh
+source contract/endpoints_data.sh
+source contract/setting_html.sh
 
 function setup_envs()
 {
@@ -25,6 +27,16 @@ function setup_envs()
   FILE_SPRINT_BUGS_FLAGGED="bugs_flagged.txt"
   DOD=70
 }
+
+
+function check_tags_in_config_file
+{
+  check_offical_document_tag
+  check_offical_document_file
+  check_tag_for_contract_test
+  check_folder_of_contract_test
+}
+
 
 function get_unit_test_metric_ios()
 {
@@ -116,10 +128,7 @@ function set_bugs_flagged_chart
 
 function get_all_datas_functional()
 {
-
   setup_functional_envs
-
-  SCENARIOS_TOTAL_OF_PROJECT=0
 
   get_all_features_from_testing_project
   
@@ -170,28 +179,23 @@ function get_all_datas_functional()
 
 function get_all_datas_contract()
 {
-  TOTAL_NUMBER_OF_ENDPOINTS=0
-  TOTAL_NUMBER_OF_CONTRACT_SCENARIOS=0
-  # ls $PATH_TESTS | grep 'testing' >> tests.txt
+  setup_contract_envs
+
+
+  get_testing_files_name
   while read LINE
   do
     get_tested_endpoints_by_file
     get_contract_scenarios_by_file
-    # cat $PATH_TESTS$LINE | grep 'const' | grep 'PATH_' | awk '{print $2}' >> $FILE_LIST_PATHS
-    # cat $PATH_TESTS$LINE | grep 'it(' >> $FILE_LIST_SCENARIOS
   done < $FILE_WITH_TESTING_FILES_NAMES
 
-  TOTAL_NUMBER_OF_ENDPOINTS=$(sort $FILE_WITH_ENDPOINTS_BY_FILE | awk '$1=$1' | awk '!a[$0]++' | wc -l)
-  TOTAL_NUMBER_OF_CONTRACT_SCENARIOS=$(sort $FILE_WITH_CONTRACT_SCENARIO_BY_FILE | awk '$1=$1' |awk '!a[$0]++' | wc -l)
+  get_total_number_of_endpoints
+  get_total_number_of_contract_scenarios
+  remove_all_files_used_in_contract_module
 
-  TOTAL_NUMBER_OF_ENDPOINTS=$(echo $PATHS_TOTAL | tr -d ' ')
-  TOTAL_NUMBER_OF_CONTRACT_SCENARIOS=$(echo $SCENARIOS_TOTAL | tr -d ' ')
-
-  ALL_METRICS=$ALL_METRICS" "$TOTAL_NUMBER_OF_CONTRACT_SCENARIOS"-"$TOTAL_NUMBER_OF_ENDPOINTS
-
-  rm -rf $FILE_WITH_TESTING_FILES_NAMES
-  rm -rf $FILE_WITH_ENDPOINTS_BY_FILE
-  rm -rf $FILE_WITH_CONTRACT_SCENARIO_BY_FILE
+  echo "TOTAL NUMBER OF ENDPOINTS: "$TOTAL_NUMBER_OF_ENDPOINTS
+  echo "TOTAL NUMBER OF CONTRACT SCENARIOS: "$TOTAL_NUMBER_OF_CONTRACT_SCENARIOS
+  
 }
 
 function get_all_sprints_metrics()
@@ -270,9 +274,13 @@ function get_all_bugs_flagged()
   rm -rf sprint_historic.txt 
 }
 
+
+
+
 function set_metrics_in_template()
 {
   set_functional_test_data_in_html
+  set_contract_test_data_in_html
   # FILE=$(cat $FILE_HTML)
   # FILE=`echo ${FILE} | tr '\n' "\\n"`
   # # FILE_SPRINT=$(cat $FILE_METRICS)
@@ -375,6 +383,7 @@ function generate_weaver_report
  
   
     get_all_datas_functional
+    get_all_datas_contract
     set_report_platform_menu
     # set_bug_platform_menu
     # get_all_datas_contract
@@ -405,5 +414,8 @@ function generate_weaver_report
 
 
 setup_envs
+setup_functional_envs
+setup_contract_envs
+check_tags_in_config_file
 generate_weaver_report
 
