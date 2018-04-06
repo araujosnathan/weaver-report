@@ -4,8 +4,6 @@ source functional_tests_datas.sh
 
 function setup_envs()
 {
-  # PATH_TO_FEATURES=$(cat weaver-report-config.yml | grep path_to_features | awk '{print $2}')
-  # PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS=$(cat weaver-report-config.yml | grep path_to_all_scenarios_document_txt | awk '{print $2}')
   FILE_HTML="file_html.txt"
   FILE_METRICS="file_metrics.txt"
   FILE_BUGS_JS="file_bugs.txt"
@@ -179,40 +177,46 @@ function get_all_datas_functional()
   do
 
     get_feature_name
-    get_total_number_of_scenarios_by_feature 
-    get_total_number_of_scenarios_from_project
-    get_scenario_names_by_feature
-    get_total_number_of_scenarios_from_official_document_by_feature
-    get_scenario_names_from_official_document
-    calculate_coverage_by_feature
-    
-    set_collapse_feature_html
-    
-    # echo 'Cenários não implementados':
-    j=1
-    while read L 
-    do 
-      SCENARIO_NAME=$(cat $FILE_WITH_SCENARIO_NAMES_BY_FEATURE | grep "$L")
-      if [ -z "$SCENARIO_NAME" ]; then
-        set_scenarios_not_implemented_to_collapse_html
-        j=$(($j+1))
-      else
-        set_scenarios_implemented_to_collapse_html
-        j=$(($j+1))
-      fi
-    done < $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
+    check_feature_name_in_official_document
+    if [ "$STATUS" = "true" ]; then
 
-    rm -rf $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
-    rm -rf $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
-    i=$(($i+1))
-    set_end_html
+      get_total_number_of_scenarios_by_feature 
+      get_total_number_of_scenarios_from_project
+      get_scenario_names_by_feature
+      get_total_number_of_scenarios_from_official_document_by_feature
+      get_scenario_names_from_official_document
+      calculate_coverage_by_feature
+      
+      set_collapse_feature_html
+      
+      j=1
+      while read L 
+      do 
+        SCENARIO_NAME=$(cat $FILE_WITH_SCENARIO_NAMES_BY_FEATURE | grep "$L")
+        if [ -z "$SCENARIO_NAME" ]; then
+          set_scenarios_not_implemented_to_collapse_html
+          j=$(($j+1))
+        else
+          set_scenarios_implemented_to_collapse_html
+          j=$(($j+1))
+        fi
+      done < $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
+
+      rm -rf $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
+      rm -rf $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
+      i=$(($i+1))
+      set_end_html
+    fi
   done < $FILE_WITH_ALL_FEATURES
 
   get_total_number_of_scenarios_from_official_document
   calculate_project_coverage
-  ALL_METRICS=$ALL_METRICS" "$PROJECT_COVERAGE
+  save_functional_test_metric
+  echo "PROJECT COVERAGE: "$PROJECT_COVERAGE
+  echo "OFICCIAL DOCUMENT SCENARIOS NUMBER: "$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT
   
   rm -rf $FILE_WITH_ALL_FEATURES
+ 
 }
 
 function get_all_datas_contract()
@@ -391,59 +395,59 @@ function genenerate_report_by_platform()
 
 function generate_weaver_report
 {
-  mkdir $REPORT_NAME
+  # mkdir $REPORT_NAME
   ALL_PLATFORMS=($(echo $PLATFORMS | tr "," "\n"))
   LENGHT=${#ALL_PLATFORMS[*]}
   count=0
-  python3 main.py
+  # python3 main.py
   while [ $count -lt $LENGHT ]; do
     PLATFORM_NAME=${ALL_PLATFORMS[$count]}
     
-    ALL_METRICS=""
-    ALL_METRICS=$PLATFORM_NAME
-    ALL_METRICS=$ALL_METRICS" "$REPORT_NAME
-    ALL_METRICS_BUGS=""
-    ALL_METRICS_BUGS=$PLATFORM_NAME
-    ALL_METRICS_BUGS=$ALL_METRICS_BUGS" "$REPORT_NAME
+    # ALL_METRICS=""
+    # ALL_METRICS=$PLATFORM_NAME
+    # ALL_METRICS=$ALL_METRICS" "$REPORT_NAME
+    # ALL_METRICS_BUGS=""
+    # ALL_METRICS_BUGS=$PLATFORM_NAME
+    # ALL_METRICS_BUGS=$ALL_METRICS_BUGS" "$REPORT_NAME
    
-    if [ "$PLATFORM_NAME" = "ios" ];
-    then
-      get_unit_test_metric_ios
-      ALL_METRICS=$ALL_METRICS" "$UNIT_TEST_COVERAGE_IOS
-    elif [ "$PLATFORM_NAME" = "android" ];
-    then
-      get_unit_test_metric_android
-      ALL_METRICS=$ALL_METRICS" "$UNIT_TEST_COVERAGE_ANDROID
-    fi
+    # if [ "$PLATFORM_NAME" = "ios" ];
+    # then
+    #   get_unit_test_metric_ios
+    #   ALL_METRICS=$ALL_METRICS" "$UNIT_TEST_COVERAGE_IOS
+    # elif [ "$PLATFORM_NAME" = "android" ];
+    # then
+    #   get_unit_test_metric_android
+    #   ALL_METRICS=$ALL_METRICS" "$UNIT_TEST_COVERAGE_ANDROID
+    # fi
  
   
     get_all_datas_functional
-    set_report_platform_menu
-    set_bug_platform_menu
-    get_all_datas_contract
-    get_current_bug_metric
-    echo $ALL_METRICS >> $FILE_SPRINTS_METRICS
-    echo $ALL_METRICS_BUGS >> $FILE_SPRINTS_BUGS
-    get_all_sprints_metrics
-    get_all_sprints_bugs
-    set_metrics_in_template
-    set_chart_template
+    # set_report_platform_menu
+    # set_bug_platform_menu
+    # get_all_datas_contract
+    # get_current_bug_metric
+    # echo $ALL_METRICS >> $FILE_SPRINTS_METRICS
+    # echo $ALL_METRICS_BUGS >> $FILE_SPRINTS_BUGS
+    # get_all_sprints_metrics
+    # get_all_sprints_bugs
+    # set_metrics_in_template
+    # set_chart_template
     let count++
     
   done
   
-  count=0
-  while [ $count -lt $LENGHT ]; do
-    PLATFORM_NAME=${ALL_PLATFORMS[$count]}
-    get_all_bugs_flagged
-    genenerate_report_by_platform
-    let count++
-  done
+  # count=0
+  # while [ $count -lt $LENGHT ]; do
+  #   PLATFORM_NAME=${ALL_PLATFORMS[$count]}
+  #   get_all_bugs_flagged
+  #   genenerate_report_by_platform
+  #   let count++
+  # done
 
-  cp -r ../template/ $REPORT_NAME/
-  rm -rf $REPORT_NAME/index.html
-  rm -rf $REPORT_NAME/chart-morris.html
-  rm -rf $REPORT_NAME/js/lib/morris-chart/morris-init.js
+  # cp -r ../template/ $REPORT_NAME/
+  # rm -rf $REPORT_NAME/index.html
+  # rm -rf $REPORT_NAME/chart-morris.html
+  # rm -rf $REPORT_NAME/js/lib/morris-chart/morris-init.js
 }
 
 

@@ -25,8 +25,23 @@ function get_all_features_from_testing_project
 
 function get_feature_name
 {
-    FEATURE_NAME=$(cat $PATH_TO_FEATURES$LINE   | grep 'Funcionalidade:\|Feature:' | awk '{t=""; for(i=2;i<=NF;i++) t=t" "$i; print t}')
-    FEATURE_NAME=`echo $FEATURE_NAME`
+    if [ ! -f "$PATH_TO_FEATURES$LINE" ]; then
+        echo -e "\033[31;1mThis file: '$PATH_TO_FEATURES$LINE' do not exist. Please check this path!\033[m"
+        exit 1
+    else
+        FEATURE_NAME=$(cat $PATH_TO_FEATURES$LINE   | grep 'Funcionalidade:\|Feature:' | awk '{t=""; for(i=2;i<=NF;i++) t=t" "$i; print t}')
+        FEATURE_NAME=`echo $FEATURE_NAME`
+    fi
+}
+
+function check_feature_name_in_official_document
+{
+    CONTENT="$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep "$FEATURE_NAME")"
+    if [ -z "$CONTENT" ]; then
+        STATUS="false"
+    else
+        STATUS="true"
+    fi
 }
 
 function get_total_number_of_scenarios_by_feature
@@ -36,8 +51,8 @@ function get_total_number_of_scenarios_by_feature
     else
         CONTENT=$(cat $PATH_TO_FEATURES$LINE  | grep @$PLATFORM_NAME)
         if [ -z "$CONTENT" ]; then
-            echo -e "\033[31;1mThe Platform name tag: $PLATFORM_NAME was not found in '.feature' files. \nPlease, set correct platform name in config.yml and/or add this tag for all scenarios already implemented!\033[m"
-            exit 1
+            # echo -e "\033[36;1mNot found platform name tag '$PLATFORM_NAME' in this feature:  $LINE \nThese scenarios will be counted as NOT IMPLEMENTED!\n \033[m"
+            SCENARIOS_TOTAL_BY_FEATURE=0
         else
             SCENARIOS_TOTAL_BY_FEATURE=$(cat $PATH_TO_FEATURES$LINE  | grep @$PLATFORM_NAME -A1 | grep 'Cenário:\|Cenario:\|Scenario:' | wc -l)
             SCENARIOS_TOTAL_BY_FEATURE=$(echo $SCENARIOS_TOTAL_BY_FEATURE | tr -d ' ')
@@ -62,8 +77,14 @@ function get_scenario_names_by_feature
 
 function get_total_number_of_scenarios_from_official_document_by_feature
 {
-   TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep $FEATURE_NAME | wc -l)
-   TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(echo $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE | tr -d ' ')
+    CONTENT="$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep $FEATURE_NAME)"
+    if [ -z "$CONTENT" ]; then
+        # echo -e "\n\033[33;1mThis feature: '$FEATURE_NAME' was not found in official document of scenarios and it is not possible to generate any metric about that! \033[m"
+        TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=0
+    else
+        TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep $FEATURE_NAME | wc -l)
+        TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(echo $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE | tr -d ' ')
+    fi
 }
 
 function get_scenario_names_from_official_document
@@ -74,7 +95,11 @@ function get_scenario_names_from_official_document
 
 function calculate_coverage_by_feature
 {
-  COVERAGE_BY_FEATURE=$((($SCENARIOS_TOTAL_BY_FEATURE*100)/$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE))
+    if [ $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE -gt 0 ]; then
+        COVERAGE_BY_FEATURE=$((($SCENARIOS_TOTAL_BY_FEATURE*100)/$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE))
+    else
+        echo -e "\033[33;1mThis feature: '$FEATURE_NAME' was not found in Official Document of Scenarios.\nSo it is not possible to generate any metric about this feature!!\033[m"  
+    fi     
 }
 
 function get_total_number_of_scenarios_from_official_document
@@ -88,4 +113,9 @@ function calculate_project_coverage
   PROJECT_COVERAGE=$(echo $SCENARIOS_TOTAL_OF_PROJECT 100 $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT | awk '{print ($1*$2) / $3}')
   PROJECT_COVERAGE=$(printf %.2f $PROJECT_COVERAGE)
   PROJECT_COVERAGE=$(echo $PROJECT_COVERAGE | tr "," ".")
+}
+
+function save_functional_test_metric
+{
+    ALL_METRICS=$ALL_METRICS" "$PROJECT_COVERAGE
 }
