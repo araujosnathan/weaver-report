@@ -1,6 +1,6 @@
- .DS_Store
-/scripts/config.yml
-/tests/project_example/*
+.DS_Store
+scripts/config.yml
+tests/project_example/*
 /__pycache__/*
-/scripts/tests/ .DS_Store
-/scripts/ .DS_Store
+scripts/tests/.DS_Store
+scripts/.DS_Store
