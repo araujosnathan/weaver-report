@@ -10,7 +10,6 @@ function setup_envs()
   FILE_BUGS_JS="file_bugs.txt"
   FILE_BUGS_FLAGGED="file_bugs_flagged.txt"
   FILE_CURRENT_BUGS_METRIC="bugs_metric.txt"
-  PATH_TESTS=$(cat config.yml | grep path_to_contract_tests | awk '{print $2}')
   FILE_LIST_PATHS='list_paths.txt'
   FILE_LIST_SCENARIOS=' list_scenarios.txt'
   REPORT_NAME=$(cat config.yml | grep report_name | awk '{print $2}')
@@ -171,26 +170,28 @@ function get_all_datas_functional()
 
 function get_all_datas_contract()
 {
-  PATHS_TOTAL=0
-  SCENARIOS_TOTAL=0
-  ls $PATH_TESTS | grep 'testing' >> tests.txt
+  TOTAL_NUMBER_OF_ENDPOINTS=0
+  TOTAL_NUMBER_OF_CONTRACT_SCENARIOS=0
+  # ls $PATH_TESTS | grep 'testing' >> tests.txt
   while read LINE
   do
-    cat $PATH_TESTS$LINE | grep 'const' | grep 'PATH_' | awk '{print $2}' >> $FILE_LIST_PATHS
-    cat $PATH_TESTS$LINE | grep 'it(' >> $FILE_LIST_SCENARIOS
-  done < tests.txt
+    get_tested_endpoints_by_file
+    get_contract_scenarios_by_file
+    # cat $PATH_TESTS$LINE | grep 'const' | grep 'PATH_' | awk '{print $2}' >> $FILE_LIST_PATHS
+    # cat $PATH_TESTS$LINE | grep 'it(' >> $FILE_LIST_SCENARIOS
+  done < $FILE_WITH_TESTING_FILES_NAMES
 
-  PATHS_TOTAL=$(sort list_paths.txt | awk '$1=$1' | awk '!a[$0]++' | wc -l)
-  SCENARIOS_TOTAL=$(sort list_scenarios.txt | awk '$1=$1' |awk '!a[$0]++' | wc -l)
+  TOTAL_NUMBER_OF_ENDPOINTS=$(sort $FILE_WITH_ENDPOINTS_BY_FILE | awk '$1=$1' | awk '!a[$0]++' | wc -l)
+  TOTAL_NUMBER_OF_CONTRACT_SCENARIOS=$(sort $FILE_WITH_CONTRACT_SCENARIO_BY_FILE | awk '$1=$1' |awk '!a[$0]++' | wc -l)
 
-  PATHS_TOTAL=$(echo $PATHS_TOTAL | tr -d ' ')
-  SCENARIOS_TOTAL=$(echo $SCENARIOS_TOTAL | tr -d ' ')
+  TOTAL_NUMBER_OF_ENDPOINTS=$(echo $PATHS_TOTAL | tr -d ' ')
+  TOTAL_NUMBER_OF_CONTRACT_SCENARIOS=$(echo $SCENARIOS_TOTAL | tr -d ' ')
 
-  ALL_METRICS=$ALL_METRICS" "$SCENARIOS_TOTAL"-"$PATHS_TOTAL
+  ALL_METRICS=$ALL_METRICS" "$TOTAL_NUMBER_OF_CONTRACT_SCENARIOS"-"$TOTAL_NUMBER_OF_ENDPOINTS
 
-  rm -rf tests.txt
-  rm -rf list_paths.txt
-  rm -rf list_scenarios.txt
+  rm -rf $FILE_WITH_TESTING_FILES_NAMES
+  rm -rf $FILE_WITH_ENDPOINTS_BY_FILE
+  rm -rf $FILE_WITH_CONTRACT_SCENARIO_BY_FILE
 }
 
 function get_all_sprints_metrics()
