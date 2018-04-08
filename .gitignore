@@ -4,3 +4,4 @@ tests/project_example/*
 /__pycache__/*
 scripts/tests/.DS_Store
 scripts/.DS_Store
+static/* linguist-vendored
