@@ -8,10 +8,28 @@ testShouldReturnTrueForExistContractTestTag()
 {
     touch config.yml
     echo "Parameters:" >> config.yml
+    echo "path_to_contract_test:" >> config.yml
+    setup_contract_envs
+    check_tag_for_contract_test
+    assertEquals "true" "$STATUS_CONTRACT_TESTING"
+}
+
+testShouldReturnFalseForExistContractTestTag()
+{
+    touch config.yml
+    echo "Parameters:" >> config.yml
+    setup_contract_envs
+    check_tag_for_contract_test
+    assertEquals "false" "$STATUS_CONTRACT_TESTING"
+}
+
+testShouldReturnDoYouMeanForExistContractTestTagPart()
+{
+    touch config.yml
+    echo "Parameters:" >> config.yml
     echo "path_to_contract_t:" >> config.yml
     setup_contract_envs
-    
-    assertEquals "$(check_tag_for_contract_test)" "$(check_tag_for_contract_test)"
+    assertEquals "$(echo -e "\033[33;1mDo you mean? path_to_contract_test\033[m")" "$(check_tag_for_contract_test)"
 }
 
 testErrorForNotExistFolderOfContractTest()

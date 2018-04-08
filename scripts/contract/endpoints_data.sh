@@ -10,11 +10,18 @@ function setup_contract_envs()
 
 function check_tag_for_contract_test
 {
-  CONTENT=$(cat config.yml | grep path_to_contract_test)
-  if [ -z "$CONTENT" ]; then 
-    echo -e "\033[31;1mPlease, set correct tag for Contract Test Folder: 'path_to_contract_test' in config.yml\033[m" 
-    exit 1
-  fi
+    CONTENT=$(cat config.yml | grep path_to_contract_test)
+    if [ -z "$CONTENT" ]; then
+      CONTENT_FILE=$(cat config.yml)
+      if [[ $CONTENT_FILE =~ "path_to_con" || $CONTENT_FILE =~ "path_to_contra" || $CONTENT_FILE =~ "path_to_contract" || $CONTENT_FILE =~ "path_to_contract_te" ]]; then
+          echo -e "\033[33;1mDo you mean? path_to_contract_test\033[m"
+        exit 1
+      else
+        STATUS_CONTRACT_TESTING="false"
+      fi
+    else
+      STATUS_CONTRACT_TESTING="true"
+    fi
 }
 
 function check_folder_of_contract_test

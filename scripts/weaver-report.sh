@@ -34,7 +34,9 @@ function check_tags_in_config_file
   check_offical_document_tag
   check_offical_document_file
   check_tag_for_contract_test
-  check_folder_of_contract_test
+  if [ "$STATUS_CONTRACT_TESTING" = "true" ]; then
+    check_folder_of_contract_test
+  fi
 }
 
 
@@ -179,23 +181,25 @@ function get_all_datas_functional()
 
 function get_all_datas_contract()
 {
-  setup_contract_envs
-
-
-  get_testing_files_name
-  while read LINE
-  do
-    get_tested_endpoints_by_file
-    get_contract_scenarios_by_file
-  done < $FILE_WITH_TESTING_FILES_NAMES
-
-  get_total_number_of_endpoints
-  get_total_number_of_contract_scenarios
-  remove_all_files_used_in_contract_module
-
-  echo "TOTAL NUMBER OF ENDPOINTS: "$TOTAL_NUMBER_OF_ENDPOINTS
-  echo "TOTAL NUMBER OF CONTRACT SCENARIOS: "$TOTAL_NUMBER_OF_CONTRACT_SCENARIOS
   
+  if [ "$STATUS_CONTRACT_TESTING" = "true" ]; then
+    setup_contract_envs
+
+
+    get_testing_files_name
+    while read LINE
+    do
+      get_tested_endpoints_by_file
+      get_contract_scenarios_by_file
+    done < $FILE_WITH_TESTING_FILES_NAMES
+
+    get_total_number_of_endpoints
+    get_total_number_of_contract_scenarios
+    remove_all_files_used_in_contract_module
+
+    echo "TOTAL NUMBER OF ENDPOINTS: "$TOTAL_NUMBER_OF_ENDPOINTS
+    echo "TOTAL NUMBER OF CONTRACT SCENARIOS: "$TOTAL_NUMBER_OF_CONTRACT_SCENARIOS
+  fi
 }
 
 function get_all_sprints_metrics()
