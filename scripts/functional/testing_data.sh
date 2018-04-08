@@ -6,6 +6,7 @@ function setup_functional_envs()
     PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS=$(cat config.yml | grep path_to_official_document_of_scenarios | awk '{print $2}')
     SCENARIOS_TOTAL_OF_PROJECT=0
     DEFINITION_OF_DONE_TARGET=70
+    FILE_HTML="file_html.txt"
 }
 
 function get_all_features_from_testing_project

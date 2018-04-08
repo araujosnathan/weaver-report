@@ -4,25 +4,20 @@ source functional/testing_data.sh
 source functional/setting_html.sh
 source contract/endpoints_data.sh
 source contract/setting_html.sh
+source develop/unit_test.sh
+source historic/recent_sprints.sh
 
 function setup_envs()
 {
-  FILE_HTML="file_html.txt"
-  FILE_METRICS="file_metrics.txt"
   FILE_BUGS_JS="file_bugs.txt"
   FILE_BUGS_FLAGGED="file_bugs_flagged.txt"
   FILE_CURRENT_BUGS_METRIC="bugs_metric.txt"
-  FILE_LIST_PATHS='list_paths.txt'
-  FILE_LIST_SCENARIOS=' list_scenarios.txt'
   REPORT_NAME=$(cat config.yml | grep report_name | awk '{print $2}')
   PLATFORMS=$(cat config.yml | grep platforms | awk '{print $2}')
   PLATFORM_REPORT=""
   BUG_PLATFORM_REPORT=""
   CHART_INIT=""
-  UNIT_TEST_DOC=$(cat config.yml | grep unit_test_document_ios | awk '{print $2}')
-  UNIT_TEST_DOC_ANDROID=$(cat config.yml | grep unit_test_document_android | awk '{print $2}')
   ALL_METRICS=""
-  FILE_SPRINTS_METRICS="sprints_metrics.txt"
   FILE_SPRINTS_BUGS="sprints_bugs.txt"
   FILE_SPRINT_BUGS_FLAGGED="bugs_flagged.txt"
   DOD=70
@@ -37,98 +32,49 @@ function check_tags_in_config_file
   if [ "$STATUS_CONTRACT_TESTING" = "true" ]; then
     check_folder_of_contract_test
   fi
-}
-
-
-function get_unit_test_metric_ios()
-{
-
-  UNIT_TEST_COVERAGE_IOS=$(cat $UNIT_TEST_DOC | grep -o  "\"total_coverage\">[^']*" | grep -o [0-9]*.[0-9]*%)
-  UNIT_TEST_COVERAGE_IOS=$(echo $UNIT_TEST_COVERAGE_IOS | tr '%' ' ')
-}
-
-function get_unit_test_metric_android()
-{
-  UNIT_TEST_COVERAGE_ANDROID=$(cat $UNIT_TEST_DOC_ANDROID | grep Total | grep -o  "\"ctr2\">[^']*" | grep -o [0-9]*.[0-9]*% | head -1)
-  UNIT_TEST_COVERAGE_ANDROID=$(echo $UNIT_TEST_COVERAGE_ANDROID | tr '%' ' ' | tr '>' ' ')
-}
-
-function set_metrics_sprint_html()
-{
-  echo "<tr>" >> $FILE_METRICS
-  echo "<td>" >> $FILE_METRICS
-  echo "<div class='round-img'>" >> $FILE_METRICS
-  echo "<a href=''><img src='images/report_scrum.png' alt=''></a>" >> $FILE_METRICS
-  echo "</div>" >> $FILE_METRICS
-  echo "</td>" >> $FILE_METRICS
-  echo "<td>$REPORT_NAME_LABEL</td>" >> $FILE_METRICS
-  if [ $UNIT_TEST_COVERAGE = "--" ]
-  then
-    echo "<td><span class='badge badge-success'>$UNIT_TEST_COVERAGE</span></td>" >> $FILE_METRICS
-  elif [ $(echo $UNIT_TEST_COVERAGE ">" $DOD | bc -l) -eq 1 ] && [ $(echo $UNIT_TEST_COVERAGE "< 99"  | bc -l) -eq 1 ]
-  then
-    echo "<td><span class='badge badge-info'>$UNIT_TEST_COVERAGE%</span></td>" >> $FILE_METRICS
-  elif [ $(echo $UNIT_TEST_COVERAGE "<" $DOD | bc -l) -eq 1 ]
-  then
-    echo "<td><span class='badge badge-danger'>$UNIT_TEST_COVERAGE%</span></td>" >> $FILE_METRICS
-  elif [ $(echo $UNIT_TEST_COVERAGE  "<" $DOD | bc -l) -eq 0 ] && [ $(echo $UNIT_TEST_COVERAGE  ">" $DOD | bc -l) -eq 0 ]
-  then
-    echo "<td><span class='badge badge-info'>$UNIT_TEST_COVERAGE%</span></td>" >> $FILE_METRICS
-  elif [ $(echo $UNIT_TEST_COVERAGE ">" $DOD | bc -l) -eq 1 ] && [ $(echo $UNIT_TEST_COVERAGE "> 99" | bc -l) -eq 1 ]
-  then
-    echo "<td><span class='badge badge-success'>$FUNCTIONAL_TEST_COVERAGE%</span></td>" >> $FILE_METRICS
+  check_tag_for_ios_unit_test
+  if [ "$IOS_STATUS_UNIT_TEST" = "true" ]; then
+    check_file_of_ios_unit_test
   fi
-  
-  if [ $(echo $FUNCTIONAL_TEST_COVERAGE ">" $DOD | bc -l) -eq 1 ] && [ $(echo $FUNCTIONAL_TEST_COVERAGE "< 99"  | bc -l) -eq 1 ]
-  then
-    echo "<td><span class='badge badge-info'>$FUNCTIONAL_TEST_COVERAGE%</span></td>" >> $FILE_METRICS
-  elif [ $(echo $FUNCTIONAL_TEST_COVERAGE "<" $DOD | bc -l) -eq 1 ]
-  then
-    echo "<td><span class='badge badge-danger'>$FUNCTIONAL_TEST_COVERAGE%</span></td>" >> $FILE_METRICS
-  elif [ $(echo $FUNCTIONAL_TEST_COVERAGE  "<" $DOD | bc -l) -eq 0 ] && [ $(echo $FUNCTIONAL_TEST_COVERAGE  ">" $DOD | bc -l) -eq 0 ]
-  then
-    echo "<td><span class='badge badge-info'>$FUNCTIONAL_TEST_COVERAGE%</span></td>" >> $FILE_METRICS
-  elif [ $(echo $FUNCTIONAL_TEST_COVERAGE ">" $DOD | bc -l) -eq 1 ] && [ $(echo $FUNCTIONAL_TEST_COVERAGE "> 99" | bc -l) -eq 1 ]
-  then
-    echo "<td><span class='badge badge-success'>$FUNCTIONAL_TEST_COVERAGE%</span></td>" >> $FILE_METRICS
+  check_tag_for_android_unit_test
+  if [ "$ANDROID_STATUS_UNIT_TEST" = "true" ]; then
+    check_file_of_android_unit_test
   fi
-
-  echo "<td><span class='badge badge-danger'>$CONTRACT_TEST_COVERAGE</span></td>" >> $FILE_METRICS
-  echo "</tr>" >> $FILE_METRICS
 }
+
 
 function set_report_platform_menu
 {
    PLATFORM_REPORT=$PLATFORM_REPORT$(echo "<li><a href="$REPORT_NAME-$PLATFORM_NAME.html">$PLATFORM_NAME</a></li>")
 }
 
-function set_bug_platform_menu
-{
+# function set_bug_platform_menu
+# {
   
-   BUG_PLATFORM_REPORT=$BUG_PLATFORM_REPORT$(echo "<li><a href="chart-morris-$PLATFORM_NAME.html">Bugs $PLATFORM_NAME</a></li>")
-}
+#    BUG_PLATFORM_REPORT=$BUG_PLATFORM_REPORT$(echo "<li><a href="chart-morris-$PLATFORM_NAME.html">Bugs $PLATFORM_NAME</a></li>")
+# }
 
-function set_chart_init
-{
-  CHART_INIT=$(echo "<script src="js/lib/morris-chart/morris-init-$PLATFORM_NAME.js"></script>")
-}
+# function set_chart_init
+# {
+#   CHART_INIT=$(echo "<script src="js/lib/morris-chart/morris-init-$PLATFORM_NAME.js"></script>")
+# }
 
-function set_bugs_flagged_chart
-{
-  echo "<div class='recent-comment'>" >> $FILE_BUGS_FLAGGED
-  echo "<div class='media'>" >> $FILE_BUGS_FLAGGED
-  echo "<div class='media-left'>" >> $FILE_BUGS_FLAGGED
-  echo "<a href='#'><img alt='...' src='images/report_bug_flagged.png' class='media-object'></a>" >> $FILE_BUGS_FLAGGED
-  echo "</div>" >> $FILE_BUGS_FLAGGED
-  echo "<div class='media-body'>" >> $FILE_BUGS_FLAGGED
-  echo "<h4 class='media-heading'>$BUG_TICKET</h4>" >> $FILE_BUGS_FLAGGED
-  echo "<p>$BUG_TITLE</p>" >> $FILE_BUGS_FLAGGED
-  echo "</div>" >> $FILE_BUGS_FLAGGED
-  echo "</div>" >> $FILE_BUGS_FLAGGED
-  echo "</div>" >> $FILE_BUGS_FLAGGED
-}
+# function set_bugs_flagged_chart
+# {
+#   echo "<div class='recent-comment'>" >> $FILE_BUGS_FLAGGED
+#   echo "<div class='media'>" >> $FILE_BUGS_FLAGGED
+#   echo "<div class='media-left'>" >> $FILE_BUGS_FLAGGED
+#   echo "<a href='#'><img alt='...' src='images/report_bug_flagged.png' class='media-object'></a>" >> $FILE_BUGS_FLAGGED
+#   echo "</div>" >> $FILE_BUGS_FLAGGED
+#   echo "<div class='media-body'>" >> $FILE_BUGS_FLAGGED
+#   echo "<h4 class='media-heading'>$BUG_TICKET</h4>" >> $FILE_BUGS_FLAGGED
+#   echo "<p>$BUG_TITLE</p>" >> $FILE_BUGS_FLAGGED
+#   echo "</div>" >> $FILE_BUGS_FLAGGED
+#   echo "</div>" >> $FILE_BUGS_FLAGGED
+#   echo "</div>" >> $FILE_BUGS_FLAGGED
+# }
 
-function get_all_datas_functional()
+function get_all_functional_datas()
 {
   setup_functional_envs
 
@@ -179,10 +125,9 @@ function get_all_datas_functional()
  
 }
 
-function get_all_datas_contract()
+function get_all_contract_datas()
 {
   if [ "$STATUS_CONTRACT_TESTING" = "true" ]; then
-    setup_contract_envs
     get_testing_files_name
     while read LINE
     do
@@ -194,107 +139,88 @@ function get_all_datas_contract()
     get_total_number_of_contract_scenarios
     remove_all_files_used_in_contract_module
 
+    save_contract_metric
     echo "TOTAL NUMBER OF ENDPOINTS: "$TOTAL_NUMBER_OF_ENDPOINTS
     echo "TOTAL NUMBER OF CONTRACT SCENARIOS: "$TOTAL_NUMBER_OF_CONTRACT_SCENARIOS
-  fi
-}
-
-function get_all_sprints_metrics()
-{
-  cat $FILE_SPRINTS_METRICS | sort -rn -k 1 | grep "$PLATFORM_NAME" >> sprint_historic.txt
-  while read LINE 
-  do
-    REPORT_NAME_LABEL=$(echo $LINE | awk '{print $2}')
-    UNIT_TEST_COVERAGE=$(echo $LINE | awk '{print $3}')
-    FUNCTIONAL_TEST_COVERAGE=$(echo $LINE | awk '{print $4}')
-    CONTRACT_TEST_COVERAGE=$(echo $LINE | awk '{print $5}')
-    set_metrics_sprint_html
-  done < sprint_historic.txt
-
-  rm -rf sprint_historic.txt
- 
-}
-
-function set_bugs_sprints_js()
-{
-  echo "{" >> $FILE_BUGS_JS
-  echo "s: '$REPORT_NAME_LABEL'," >> $FILE_BUGS_JS
-	echo "bl: $BACKLOG_NUMBER," >> $FILE_BUGS_JS
-	echo "fx: $BUG_FIXED_NUMBER," >> $FILE_BUGS_JS
-	echo "fl: $BUG_FLAGGED_NUMBER" >> $FILE_BUGS_JS
-  if [ $COUNT -gt 1 ] && [ $MAX -lt $COUNT ];
-  then
-    echo "}," >> $FILE_BUGS_JS
   else
-    echo "}" >> $FILE_BUGS_JS
+    TOTAL_NUMBER_OF_ENDPOINTS="N/A"
+    TOTAL_NUMBER_OF_CONTRACT_SCENARIOS="N/A"
+    save_contract_metric
   fi
 }
 
-function get_all_sprints_bugs()
-{
-  cat $FILE_SPRINTS_BUGS | grep $PLATFORM_NAME >> sprint_historic.txt
-  COUNT=$(cat $FILE_SPRINTS_BUGS | grep "$PLATFORM_NAME" | wc -l)
-  MAX=1
-  while read LINE 
-  do
-    REPORT_NAME_LABEL=$(echo $LINE | awk '{print $2}')
-    BACKLOG_NUMBER=$(echo $LINE | awk '{print $3}')
-    BUG_FIXED_NUMBER=$(echo $LINE | awk '{print $4}')
-    BUG_FLAGGED_NUMBER=$(echo $LINE | awk '{print $5}')
-    set_bugs_sprints_js
-    let MAX++
-  done < sprint_historic.txt
 
-  rm -rf sprint_historic.txt
+# function set_bugs_sprints_js()
+# {
+#   echo "{" >> $FILE_BUGS_JS
+#   echo "s: '$REPORT_NAME_LABEL'," >> $FILE_BUGS_JS
+# 	echo "bl: $BACKLOG_NUMBER," >> $FILE_BUGS_JS
+# 	echo "fx: $BUG_FIXED_NUMBER," >> $FILE_BUGS_JS
+# 	echo "fl: $BUG_FLAGGED_NUMBER" >> $FILE_BUGS_JS
+#   if [ $COUNT -gt 1 ] && [ $MAX -lt $COUNT ];
+#   then
+#     echo "}," >> $FILE_BUGS_JS
+#   else
+#     echo "}" >> $FILE_BUGS_JS
+#   fi
+# }
+
+# function get_all_sprints_bugs()
+# {
+#   cat $FILE_SPRINTS_BUGS | grep $PLATFORM_NAME >> sprint_historic.txt
+#   COUNT=$(cat $FILE_SPRINTS_BUGS | grep "$PLATFORM_NAME" | wc -l)
+#   MAX=1
+#   while read LINE 
+#   do
+#     REPORT_NAME_LABEL=$(echo $LINE | awk '{print $2}')
+#     BACKLOG_NUMBER=$(echo $LINE | awk '{print $3}')
+#     BUG_FIXED_NUMBER=$(echo $LINE | awk '{print $4}')
+#     BUG_FLAGGED_NUMBER=$(echo $LINE | awk '{print $5}')
+#     set_bugs_sprints_js
+#     let MAX++
+#   done < sprint_historic.txt
+
+#   rm -rf sprint_historic.txt
  
-}
+# }
 
-function get_current_bug_metric(){
+# function get_current_bug_metric(){
   
-  cat $FILE_CURRENT_BUGS_METRIC | grep "$PLATFORM_NAME" >> sprint_historic.txt
-  while read LINE 
-  do
-    BACKLOG_CURRENT=$(echo $LINE | awk '{print $2}')
-    FIXED_CURRENT=$(echo $LINE | awk '{print $3}')
-    FLAGGED_CURRENT=$(echo $LINE | awk '{print $4}')
-  done < sprint_historic.txt
-  ALL_METRICS_BUGS=$ALL_METRICS_BUGS" "$BACKLOG_CURRENT" "$FIXED_CURRENT" "$FLAGGED_CURRENT
-  rm -rf sprint_historic.txt
-}
+#   cat $FILE_CURRENT_BUGS_METRIC | grep "$PLATFORM_NAME" >> sprint_historic.txt
+#   while read LINE 
+#   do
+#     BACKLOG_CURRENT=$(echo $LINE | awk '{print $2}')
+#     FIXED_CURRENT=$(echo $LINE | awk '{print $3}')
+#     FLAGGED_CURRENT=$(echo $LINE | awk '{print $4}')
+#   done < sprint_historic.txt
+#   ALL_METRICS_BUGS=$ALL_METRICS_BUGS" "$BACKLOG_CURRENT" "$FIXED_CURRENT" "$FLAGGED_CURRENT
+#   rm -rf sprint_historic.txt
+# }
 
-function get_all_bugs_flagged()
-{
-  cat $FILE_SPRINT_BUGS_FLAGGED | grep $PLATFORM_NAME >> sprint_historic.txt
-  while read LINE 
-  do
-    BUG_TICKET=$(echo $LINE | awk '{print $2}')
-    BUG_TITLE=$(echo $LINE | awk '{t=""; for(i=3;i<=NF;i++) t=t" "$i; print t}')
-    set_bugs_flagged_chart
-  done < sprint_historic.txt
-  rm -rf sprint_historic.txt 
-}
-
-
+# function get_all_bugs_flagged()
+# {
+#   cat $FILE_SPRINT_BUGS_FLAGGED | grep $PLATFORM_NAME >> sprint_historic.txt
+#   while read LINE 
+#   do
+#     BUG_TICKET=$(echo $LINE | awk '{print $2}')
+#     BUG_TITLE=$(echo $LINE | awk '{t=""; for(i=3;i<=NF;i++) t=t" "$i; print t}')
+#     set_bugs_flagged_chart
+#   done < sprint_historic.txt
+#   rm -rf sprint_historic.txt 
+# }
 
 
 function set_metrics_in_template()
 {
   set_functional_test_data_in_html
   set_contract_test_data_in_html
-  # FILE=$(cat $FILE_HTML)
-  # FILE=`echo ${FILE} | tr '\n' "\\n"`
-  # # FILE_SPRINT=$(cat $FILE_METRICS)
+  set_recent_sprints_data_in_html
+  # # FILE_SPRINT=$(cat $FILE_METRICS_HTML)
   # # FILE_SPRINT=`echo ${FILE_SPRINT} | tr '\n' "\\n"`
   # # FILE_BUGS=$(cat $FILE_BUGS_JS)
   # # FILE_BUGS=`echo ${FILE_BUGS} | tr '\n' "\\n"`
   
 
-  # cat ../template/index.html | sed -e "s|FUNCTIONAL_PERCENTAGE|${PROJECT_COVERAGE}|" > report_tests.html
-  # cat report_tests.html | sed -e "s|FUNCTIONAL_SCENARIOS_NUMBER|${TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT}|" > report_tests_1.html
-  # cat report_tests_1.html | sed -e "s|CONTRACT_PERCENTAGE|${SCENARIOS_TOTAL}|" > report_tests.html
-  # cat report_tests.html | sed -e "s|ENDPOINTS_NUMBER|${PATHS_TOTAL}|" > report_tests_1.html
-  
-  # cat report_tests_1.html | sed -e "s|ALL-FEATURES-AND-SCENARIOS-HERE|${FILE}|" > $REPORT_NAME-$PLATFORM_NAME.html
   # cat report_tests.html | sed -e "s|ALL_SPRINTS_METRICS|${FILE_SPRINT}|" > $REPORT_NAME-$PLATFORM_NAME.html
   
   # cat ../template/js/lib/morris-chart/morris-init.js | sed -e "s|INFO_BUGS_SPRINT|${FILE_BUGS}|" > report_bugs.js
@@ -306,7 +232,7 @@ function set_metrics_in_template()
   # rm -rf report_bugs.js
   # rm -rf report_bugs_1.js
   # rm -rf $FILE_HTML
-  # rm -rf $FILE_METRICS
+  # rm -rf $FILE_METRICS_HTML
   # rm -rf $FILE_BUGS_JS
   
 }
@@ -371,26 +297,24 @@ function generate_weaver_report
     # ALL_METRICS_BUGS=$PLATFORM_NAME
     # ALL_METRICS_BUGS=$ALL_METRICS_BUGS" "$REPORT_NAME
    
-    # if [ "$PLATFORM_NAME" = "ios" ];
-    # then
-    #   get_unit_test_metric_ios
-    #   ALL_METRICS=$ALL_METRICS" "$UNIT_TEST_COVERAGE_IOS
-    # elif [ "$PLATFORM_NAME" = "android" ];
-    # then
-    #   get_unit_test_metric_android
-    #   ALL_METRICS=$ALL_METRICS" "$UNIT_TEST_COVERAGE_ANDROID
-    # fi
+    if [ "$PLATFORM_NAME" = "ios" ];
+    then
+      get_unit_test_metric_ios
+      save_ios_unit_test
+    elif [ "$PLATFORM_NAME" = "android" ];
+    then
+      get_unit_test_metric_android
+      save_android_unit_test
+    fi
  
-  
-    get_all_datas_functional
-    get_all_datas_contract
+    get_all_functional_datas
+    get_all_contract_datas
     set_report_platform_menu
     # set_bug_platform_menu
-    # get_all_datas_contract
     # get_current_bug_metric
-    # echo $ALL_METRICS >> $FILE_SPRINTS_METRICS
+    echo $ALL_METRICS >> $FILE_WITH_RECENT_SPRINTS_METRICS
     # echo $ALL_METRICS_BUGS >> $FILE_SPRINTS_BUGS
-    # get_all_sprints_metrics
+    get_recent_sprints_metrics
     # get_all_sprints_bugs
     set_metrics_in_template
     # set_chart_template
@@ -416,6 +340,8 @@ function generate_weaver_report
 setup_envs
 setup_functional_envs
 setup_contract_envs
+setup_develop_envs
+setup_historic_envs
 check_tags_in_config_file
 generate_weaver_report
 
