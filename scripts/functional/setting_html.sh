@@ -48,8 +48,6 @@ function set_functional_test_data_in_html
 
   cat ../template/index.html | sed -e "s|FUNCTIONAL_PERCENTAGE|${PROJECT_COVERAGE}|" > report_tests.html
   cat report_tests.html | sed -e "s|FUNCTIONAL_SCENARIOS_NUMBER|${TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT}|" > report_tests_1.html
-#   cat report_tests_1.html | sed -e "s|CONTRACT_PERCENTAGE|${SCENARIOS_TOTAL}|" > report_tests.html
-#   cat report_tests.html | sed -e "s|ENDPOINTS_NUMBER|${PATHS_TOTAL}|" > report_tests_1.html
   cat report_tests_1.html | sed -e "s|ALL-FEATURES-AND-SCENARIOS-HERE|${FILE}|" > $REPORT_NAME-$PLATFORM_NAME.html
 
   rm -rf report_tests_1.html
