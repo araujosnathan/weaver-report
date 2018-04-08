@@ -47,3 +47,15 @@ function set_recent_metrics_sprint_html()
     fi
     echo "</tr>" >> $FILE_METRICS_HTML
 }
+
+function set_recent_sprints_data_in_html
+{
+  FILE_SPRINTS=$(cat $FILE_METRICS_HTML)
+  FILE_SPRINTS=`echo ${FILE_SPRINTS} | tr '\n' "\\n"`
+
+  cat $REPORT_NAME-$PLATFORM_NAME.html | sed -e "s|ALL_SPRINTS_METRICS|${FILE_SPRINTS}|" > report_tests.html
+  
+  rm -rf $REPORT_NAME-$PLATFORM_NAME.html
+  mv report_tests.html $REPORT_NAME-$PLATFORM_NAME.html
+  rm -rf $FILE_METRICS_HTML
+}

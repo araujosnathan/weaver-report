@@ -6,6 +6,7 @@ source contract/endpoints_data.sh
 source contract/setting_html.sh
 source develop/unit_test.sh
 source historic/recent_sprints.sh
+source historic/sprints_html.sh
 
 function setup_envs()
 {
