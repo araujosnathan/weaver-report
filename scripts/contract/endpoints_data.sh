@@ -75,5 +75,4 @@ function remove_all_files_used_in_contract_module
   rm -rf $FILE_WITH_TESTING_FILES_NAMES
   rm -rf $FILE_WITH_ENDPOINTS_BY_FILE
   rm -rf $FILE_WITH_CONTRACT_SCENARIO_BY_FILE
-  
 }
