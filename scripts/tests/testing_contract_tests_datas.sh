@@ -38,7 +38,6 @@ testErrorForNotExistFolderOfContractTest()
     echo "Parameters:" >> config.yml
     echo "path_to_contract_test: folder/" >> config.yml
     setup_contract_envs
-
     assertEquals "$(echo -e "\033[31;1mFolder not found in: '$PATH_TO_CONTRACT_TEST' in tag: 'path_to_contract_test'. \nPlease, set a correct path to contract test or remove this tag from config.yml \033[m")" "$(check_folder_of_contract_test)"
 }
 
@@ -51,8 +50,7 @@ testErrorDoNotExistFileNamesWithTesting()
     setup_contract_envs
     touch testin.js
     cp testin.js $PATH_TO_CONTRACT_TEST
-    assertEquals "$(echo -e "\033[31;1mIt was not found any file named with 'testing' in folder: '$PATH_TO_CONTRACT_TEST' \nPlease set correct folder with contrac tests or add 'testing' in all contract test file names!\033[m")" "$(get_testing_files_name)"
-    
+    assertEquals "$(echo -e "\033[31;1mIt was not found any file named with 'testing' in folder: '$PATH_TO_CONTRACT_TEST' \nPlease set correct folder with contrac tests or add 'testing' in all contract test file names!\033[m")" "$(get_testing_files_name)"   
 }
 
 testReturnFileWithContractTestFileNames()

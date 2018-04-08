@@ -181,11 +181,8 @@ function get_all_datas_functional()
 
 function get_all_datas_contract()
 {
-  
   if [ "$STATUS_CONTRACT_TESTING" = "true" ]; then
     setup_contract_envs
-
-
     get_testing_files_name
     while read LINE
     do
