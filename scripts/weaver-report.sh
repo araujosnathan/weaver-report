@@ -201,7 +201,6 @@ function get_all_datas_contract()
 
 function get_all_sprints_metrics()
 {
-
   cat $FILE_SPRINTS_METRICS | sort -rn -k 1 | grep "$PLATFORM_NAME" >> sprint_historic.txt
   while read LINE 
   do

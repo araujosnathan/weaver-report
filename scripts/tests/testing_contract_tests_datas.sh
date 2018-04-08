@@ -76,6 +76,5 @@ tearDown()
     rm -rf $FILE_WITH_TESTING_FILES_NAMES
 }
 
-
 # load shunit2
 . /usr/local/Cellar/shunit2/2.1.7/bin/shunit2
