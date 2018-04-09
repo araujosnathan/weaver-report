@@ -7,13 +7,17 @@ function set_collapse_feature_html()
   echo  "<a data-toggle='collapse' href='#collapse$i'>" >> $FILE_HTML
   echo  "<p class='m-t-30 f-w-600'>"$FEATURE_NAME "("$SCENARIOS_TOTAL_BY_FEATURE"/"$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE")""<span class='pull-right'>"$COVERAGE_BY_FEATURE"%</span></p>" >> $FILE_HTML
   echo      "<div class='progress '>" >> $FILE_HTML
-  if [ $COVERAGE_BY_FEATURE -lt $DEFINITION_OF_DONE_TARGET ]  || [ $COVERAGE_BY_FEATURE -eq '0' ]
-  then
-    echo "<div role='progressbar' style='width: $COVERAGE_BY_FEATURE%; height:8px;' class='progress-bar bg-danger wow animated progress-animated'> <span class='sr-only'>$COVERAGE_BY_FEATURE% Complete</span> </div>" >> $FILE_HTML
-  elif [ $COVERAGE_BY_FEATURE -gt $DEFINITION_OF_DONE_TARGET ] || [ $COVERAGE_BY_FEATURE -eq $DEFINITION_OF_DONE_TARGET ] 
+  
+  if [ $(echo $COVERAGE_BY_FEATURE ">" $DEFINITION_OF_DONE_TARGET | bc -l) -eq 1 ] && [ $(echo $COVERAGE_BY_FEATURE "< 99"  | bc -l) -eq 1 ]
   then
     echo "<div role='progressbar' style='width: $COVERAGE_BY_FEATURE%; height:8px;' class='progress-bar bg-info wow animated progress-animated'> <span class='sr-only'>$COVERAGE_BY_FEATURE% Complete</span> </div>" >> $FILE_HTML
-  elif [ $COVERAGE_BY_FEATURE -eq '100' ] 
+  elif [ $(echo $COVERAGE_BY_FEATURE "<" $DEFINITION_OF_DONE_TARGET | bc -l) -eq 1 ]
+  then
+    echo "<div role='progressbar' style='width: $COVERAGE_BY_FEATURE%; height:8px;' class='progress-bar bg-danger wow animated progress-animated'> <span class='sr-only'>$COVERAGE_BY_FEATURE% Complete</span> </div>" >> $FILE_HTML
+  elif [ $(echo $COVERAGE_BY_FEATURE  "<" $DEFINITION_OF_DONE_TARGET | bc -l) -eq 0 ] && [ $(echo $COVERAGE_BY_FEATURE  ">" $DEFINITION_OF_DONE_TARGET | bc -l) -eq 0 ]
+  then
+    echo "<div role='progressbar' style='width: $COVERAGE_BY_FEATURE%; height:8px;' class='progress-bar bg-info wow animated progress-animated'> <span class='sr-only'>$COVERAGE_BY_FEATURE% Complete</span> </div>" >> $FILE_HTML
+  elif [ $(echo $COVERAGE_BY_FEATURE ">" $DEFINITION_OF_DONE_TARGET | bc -l) -eq 1 ] && [ $(echo $COVERAGE_BY_FEATURE "> 99" | bc -l) -eq 1 ]
   then
     echo "<div role='progressbar' style='width: $COVERAGE_BY_FEATURE%; height:8px;' class='progress-bar bg-sucess wow animated progress-animated'> <span class='sr-only'>$COVERAGE_BY_FEATURE% Complete</span> </div>" >> $FILE_HTML
   fi
