@@ -23,7 +23,7 @@ testShouldReturnFalseForExistIOSUnitTestTag()
     assertEquals "false" "$IOS_STATUS_UNIT_TEST"
 }
 
-testShouldReturnDoYouMeanForExisIOStUnitTestTagPart()
+testShouldReturnDoYouMeanForExistOStUnitTestTagPart()
 {
     touch config.yml
     echo "Parameters:" >> config.yml
