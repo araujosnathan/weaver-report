@@ -5,8 +5,10 @@ source functional/setting_html.sh
 source contract/endpoints_data.sh
 source contract/setting_html.sh
 source develop/unit_test.sh
+source develop/info_html.sh
 source historic/recent_sprints.sh
 source historic/sprints_html.sh
+source jira/jira_data.sh
 
 function setup_envs()
 {
@@ -41,6 +43,7 @@ function check_tags_in_config_file
   if [ "$ANDROID_STATUS_UNIT_TEST" = "true" ]; then
     check_file_of_android_unit_test
   fi
+  check_tag_jira_server
 }
 
 
@@ -210,11 +213,11 @@ function get_all_contract_datas()
 #   rm -rf sprint_historic.txt 
 # }
 
-
 function set_metrics_in_template()
 {
   set_functional_test_data_in_html
   set_contract_test_data_in_html
+  set_unit_test_data_in_html
   set_recent_sprints_data_in_html
   # # FILE_SPRINT=$(cat $FILE_METRICS_HTML)
   # # FILE_SPRINT=`echo ${FILE_SPRINT} | tr '\n' "\\n"`
