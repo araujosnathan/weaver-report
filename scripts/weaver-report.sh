@@ -269,10 +269,10 @@ function genenerate_report_by_platform()
   mv report_tests.html $REPORT_NAME-$PLATFORM_NAME.html
   # mv report_chart_1.html chart-morris-$PLATFORM_NAME.html
 
-  # cp $REPORT_NAME-$PLATFORM_NAME.html $REPORT_NAME/
+  cp $REPORT_NAME-$PLATFORM_NAME.html $REPORT_NAME/
   # cp chart-morris-$PLATFORM_NAME.html $REPORT_NAME/
   
-  # rm -rf $REPORT_NAME-$PLATFORM_NAME.html
+  rm -rf $REPORT_NAME-$PLATFORM_NAME.html
   # rm -rf chart-morris-$PLATFORM_NAME.html
   # rm -rf $FILE_BUGS_FLAGGED
   # rm -rf report_tests.html
@@ -334,8 +334,8 @@ function generate_weaver_report
     let count++
   done
 
-  # cp -r ../template/ $REPORT_NAME/
-  # rm -rf $REPORT_NAME/index.html
+  cp -r ../template/ $REPORT_NAME/
+  rm -rf $REPORT_NAME/index.html
   # rm -rf $REPORT_NAME/chart-morris.html
   # rm -rf $REPORT_NAME/js/lib/morris-chart/morris-init.js
 }

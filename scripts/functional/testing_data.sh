@@ -69,12 +69,12 @@ function get_total_number_of_scenarios_by_feature
     if [ -z "$PLATFORM_NAME" ]; then
         SCENARIOS_TOTAL_BY_FEATURE=0
     else
-        CONTENT=$(cat $PATH_TO_FEATURES$LINE  | grep @$PLATFORM_NAME)
+        CONTENT=$(cat $PATH_TO_FEATURES$LINE  | grep "@$PLATFORM_NAME")
         if [ -z "$CONTENT" ]; then
             # echo -e "\033[36;1mNot found platform name tag '$PLATFORM_NAME' in this feature:  $LINE \nThese scenarios will be counted as NOT IMPLEMENTED!\n \033[m"
             SCENARIOS_TOTAL_BY_FEATURE=0
         else
-            SCENARIOS_TOTAL_BY_FEATURE=$(cat $PATH_TO_FEATURES$LINE  | grep @$PLATFORM_NAME -A1 | grep 'Cenário:\|Cenario:\|Scenario:' | wc -l)
+            SCENARIOS_TOTAL_BY_FEATURE=$(cat $PATH_TO_FEATURES$LINE  | grep "@$PLATFORM_NAME" -A1 | grep 'Cenário:\|Cenario:\|Scenario:' | wc -l)
             SCENARIOS_TOTAL_BY_FEATURE=$(echo $SCENARIOS_TOTAL_BY_FEATURE | tr -d ' ')
         fi
     fi
@@ -91,18 +91,18 @@ function get_scenario_names_by_feature
     if [ -z "$PLATFORM_NAME" ]; then
         echo "EmptyFile" >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
     else    
-        cat $PATH_TO_FEATURES$LINE  | grep @$PLATFORM_NAME -A1 | grep "Cenário:\|Cenario:\|Scenario:" >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
+        cat $PATH_TO_FEATURES$LINE  | grep "@$PLATFORM_NAME" -A1 | grep "Cenário:\|Cenario:\|Scenario:" >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
     fi
 }
 
 function get_total_number_of_scenarios_from_official_document_by_feature
 {
-    CONTENT="$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep $FEATURE_NAME)"
+    CONTENT="$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep "$FEATURE_NAME")"
     if [ -z "$CONTENT" ]; then
         # echo -e "\n\033[33;1mThis feature: '$FEATURE_NAME' was not found in official document of scenarios and it is not possible to generate any metric about that! \033[m"
         TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=0
     else
-        TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep $FEATURE_NAME | wc -l)
+        TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep "$FEATURE_NAME" | wc -l)
         TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(echo $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE | tr -d ' ')
     fi
 }
@@ -110,7 +110,7 @@ function get_total_number_of_scenarios_from_official_document_by_feature
 function get_scenario_names_from_official_document
 {
   FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT="scenario_doc.txt"
-  cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep $FEATURE_NAME | awk -F"\t" '{print $3}' >> $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
+  cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep "$FEATURE_NAME" | awk -F"\t" '{print $3}' >> $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
 }
 
 function calculate_coverage_by_feature
