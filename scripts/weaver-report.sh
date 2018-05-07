@@ -15,8 +15,8 @@ function setup_envs()
   FILE_BUGS_JS="file_bugs.txt"
   FILE_BUGS_FLAGGED="file_bugs_flagged.txt"
   FILE_CURRENT_BUGS_METRIC="bugs_metric.txt"
-  REPORT_NAME=$(cat config.yml | grep report_name | awk '{print $2}')
-  PLATFORMS=$(cat config.yml | grep platforms | awk '{print $2}')
+  REPORT_NAME=$(cat config.yml | grep report_name | awk '{t=""; for(i=2;i<=NF;i++) t=t" "$i; print t}')
+  PLATFORMS=$(cat config.yml | grep platforms | awk '{t=""; for(i=2;i<=NF;i++) t=t" "$i; print t}')
   PLATFORM_REPORT=""
   BUG_PLATFORM_REPORT=""
   CHART_INIT=""
@@ -283,6 +283,7 @@ function genenerate_report_by_platform()
 
 function generate_weaver_report
 {
+  REPORT_NAME=$(echo $REPORT_NAME | tr ' ' '_')
   if [ -d $REPORT_NAME ]; then
     rm -rf $REPORT_NAME
   fi
