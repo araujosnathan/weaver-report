@@ -4,7 +4,8 @@ function setup_functional_envs()
 {
     PATH_TO_FEATURES=$(cat config.yml | grep path_to_features | awk '{print $2}')
     PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS=$(cat config.yml | grep path_to_official_document_of_scenarios | awk '{print $2}')
-    SCENARIOS_TOTAL_OF_PROJECT=0
+    SCENARIOS_TOTAL_OF_PROJECT_IMPLEMENTED=0
+    TOTAL_NUMBER_OF_SCENARIOS_FROM_PROJECT=0
     DEFINITION_OF_DONE_TARGET=70
     FILE_HTML="file_html.txt"
 }
@@ -37,102 +38,79 @@ function get_feature_name
     fi
 }
 
-function check_offical_document_tag
-{
-    CONTENT=$(cat config.yml | grep path_to_official_document_of_scenarios)
-    if [ -z "$CONTENT" ]; then 
-        echo -e "\033[31;1mPlease, set correct tag for Official Document of Scenarios: 'path_to_official_document_of_scenarios' in config.yml\033[m" 
-        exit 1
-    fi
-}
-
-function check_offical_document_file
-{
-    if [ ! -f "$PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS" ]; then
-        echo -e "\033[31;1mIt was not found file: $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS\nPlease, set correct file for Official Document of Scenarios!\033[m" 
-        exit
-    fi
-}
-
-function check_feature_name_in_official_document
-{
-    CONTENT="$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep "$FEATURE_NAME")"
-    if [ -z "$CONTENT" ]; then
-        STATUS="false"
-    else
-        STATUS="true"
-    fi
-}
-
-function get_total_number_of_scenarios_by_feature
+function get_total_number_of_scenarios_by_feature_implemented
 {
     if [ -z "$PLATFORM_NAME" ]; then
-        SCENARIOS_TOTAL_BY_FEATURE=0
+        SCENARIOS_TOTAL_BY_FEATURE_IMPLEMENTED=0
     else
         CONTENT=$(cat $PATH_TO_FEATURES$LINE  | grep "@$PLATFORM_NAME")
         if [ -z "$CONTENT" ]; then
             # echo -e "\033[36;1mNot found platform name tag '$PLATFORM_NAME' in this feature:  $LINE \nThese scenarios will be counted as NOT IMPLEMENTED!\n \033[m"
-            SCENARIOS_TOTAL_BY_FEATURE=0
+            SCENARIOS_TOTAL_BY_FEATURE_IMPLEMENTED=0
         else
-            SCENARIOS_TOTAL_BY_FEATURE=$(cat $PATH_TO_FEATURES$LINE  | grep "@$PLATFORM_NAME" -A1 | grep 'Cenário:\|Cenario:\|Scenario:' | wc -l)
-            SCENARIOS_TOTAL_BY_FEATURE=$(echo $SCENARIOS_TOTAL_BY_FEATURE | tr -d ' ')
+            SCENARIOS_TOTAL_BY_FEATURE_IMPLEMENTED=$(cat $PATH_TO_FEATURES$LINE  | grep "@$PLATFORM_NAME" -A1 | grep 'Cenário:\|Cenario:\|Scenario:' | wc -l)
+            SCENARIOS_TOTAL_BY_FEATURE_IMPLEMENTED=$(echo $SCENARIOS_TOTAL_BY_FEATURE_IMPLEMENTED | tr -d ' ')
         fi
     fi
 }
 
-function get_total_number_of_scenarios_from_project
+function get_total_number_of_scenarios_implemented_from_project
 {
-  SCENARIOS_TOTAL_OF_PROJECT=$(($SCENARIOS_TOTAL_OF_PROJECT+$SCENARIOS_TOTAL_BY_FEATURE))
+  SCENARIOS_TOTAL_OF_PROJECT_IMPLEMENTED=$(($SCENARIOS_TOTAL_OF_PROJECT_IMPLEMENTED+$SCENARIOS_TOTAL_BY_FEATURE_IMPLEMENTED))
+
 }
+
+function get_scenario_names_by_feature_implemented
+{
+    FILE_WITH_SCENARIO_NAMES_BY_FEATURE_IMPLEMENTED="scenarios.txt"
+    if [ -z "$PLATFORM_NAME" ]; then
+        echo "EmptyFile" >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE_IMPLEMENTED
+    else    
+        cat $PATH_TO_FEATURES$LINE  | grep "@$PLATFORM_NAME" -A1 | grep "Cenário:\|Cenario:\|Scenario:" >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE_IMPLEMENTED
+    fi
+}
+
 
 function get_scenario_names_by_feature
 {
-    FILE_WITH_SCENARIO_NAMES_BY_FEATURE="scenarios.txt"
-    if [ -z "$PLATFORM_NAME" ]; then
-        echo "EmptyFile" >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
-    else    
-        cat $PATH_TO_FEATURES$LINE  | grep "@$PLATFORM_NAME" -A1 | grep "Cenário:\|Cenario:\|Scenario:" >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
-    fi
+    
+    FILE_WITH_SCENARIO_NAMES_BY_FEATURE="scenario_doc.txt"
+    cat $PATH_TO_FEATURES$LINE | grep "Cenário:\|Cenario:\|Scenario:" >> $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
+    # cat $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
 }
 
-function get_total_number_of_scenarios_from_official_document_by_feature
+function get_total_number_of_scenarios_by_feature
 {
-    CONTENT="$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep "$FEATURE_NAME")"
+    CONTENT="$(cat $FILE_WITH_SCENARIO_NAMES_BY_FEATURE)"
     if [ -z "$CONTENT" ]; then
-        # echo -e "\n\033[33;1mThis feature: '$FEATURE_NAME' was not found in official document of scenarios and it is not possible to generate any metric about that! \033[m"
-        TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=0
+        TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE=0
     else
-        TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep "$FEATURE_NAME" | wc -l)
-        TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE=$(echo $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE | tr -d ' ')
+        TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE=$(cat $FILE_WITH_SCENARIO_NAMES_BY_FEATURE | wc -l)
+        TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE=$(echo $TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE | tr -d ' ')
     fi
 }
 
-function get_scenario_names_from_official_document
-{
-  FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT="scenario_doc.txt"
-  cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | grep "$FEATURE_NAME" | awk -F"\t" '{print $3}' >> $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
-}
 
 function calculate_coverage_by_feature
 {
-    if [ $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE -gt 0 ]; then
-        COVERAGE_BY_FEATURE=$((($SCENARIOS_TOTAL_BY_FEATURE*100)/$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE))
+    if [ $TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE -gt 0 ]; then
+        COVERAGE_BY_FEATURE=$((($SCENARIOS_TOTAL_BY_FEATURE_IMPLEMENTED*100)/$TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE))
     else
-        echo -e "\033[33;1mThis feature: '$FEATURE_NAME' was not found in Official Document of Scenarios.\nSo it is not possible to generate any metric about this feature!!\033[m"  
+        echo -e "\033[33;1mThis feature: '$FEATURE_NAME' has not test scenarios.\nSo it is not possible to generate any metric about this feature!!\033[m"  
     fi     
 }
 
-function get_total_number_of_scenarios_from_official_document
+function get_total_number_of_scenarios_from_projet
 {
-  TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT=$(cat $PATH_TO_OFFICIAL_DOCUMENT_OF_SCENARIOS | wc -l)
-  TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT=$(echo $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT | tr -d ' ')
+    TOTAL_NUMBER_OF_SCENARIOS_FROM_PROJECT=$(($TOTAL_NUMBER_OF_SCENARIOS_FROM_PROJECT+$TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE))
+    TOTAL_NUMBER_OF_SCENARIOS_FROM_PROJECT=$(echo $TOTAL_NUMBER_OF_SCENARIOS_FROM_PROJECT | tr -d ' ')
 }
 
 function calculate_project_coverage
 {
-  PROJECT_COVERAGE=$(echo $SCENARIOS_TOTAL_OF_PROJECT 100 $TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT | awk '{print ($1*$2) / $3}')
-  PROJECT_COVERAGE=$(printf %.2f $PROJECT_COVERAGE)
-  PROJECT_COVERAGE=$(echo $PROJECT_COVERAGE | tr "," ".")
+    PROJECT_COVERAGE=$(echo $SCENARIOS_TOTAL_OF_PROJECT_IMPLEMENTED 100 $TOTAL_NUMBER_OF_SCENARIOS_FROM_PROJECT | awk '{print ($1*$2) / $3}')
+    PROJECT_COVERAGE=$(printf %.2f $PROJECT_COVERAGE)
+    PROJECT_COVERAGE=$(echo $PROJECT_COVERAGE | tr "," ".")
 }
 
 function generate_feature_express

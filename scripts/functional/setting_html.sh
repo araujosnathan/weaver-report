@@ -5,7 +5,7 @@ function set_collapse_feature_html()
 {
   echo "<h4 class='panel-title'>" >> $FILE_HTML
   echo  "<a data-toggle='collapse' href='#collapse$i'>" >> $FILE_HTML
-  echo  "<p class='m-t-30 f-w-600'>"$FEATURE_NAME "("$SCENARIOS_TOTAL_BY_FEATURE"/"$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT_BY_FEATURE")""<span class='pull-right'>"$COVERAGE_BY_FEATURE"%</span></p>" >> $FILE_HTML
+  echo  "<p class='m-t-30 f-w-600'>"$FEATURE_NAME "("$SCENARIOS_TOTAL_BY_FEATURE_IMPLEMENTED"/"$TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE")""<span class='pull-right'>"$COVERAGE_BY_FEATURE"%</span></p>" >> $FILE_HTML
   echo      "<div class='progress '>" >> $FILE_HTML
   
   if [ $(echo $COVERAGE_BY_FEATURE ">" $DEFINITION_OF_DONE_TARGET | bc -l) -eq 1 ] && [ $(echo $COVERAGE_BY_FEATURE "< 99"  | bc -l) -eq 1 ]
@@ -51,7 +51,7 @@ function set_functional_test_data_in_html
   FILE=`echo ${FILE} | tr '\n' "\\n"`
 
   cat ../template/index.html | sed -e "s|FUNCTIONAL_PERCENTAGE|${PROJECT_COVERAGE}|" > report_tests.html
-  cat report_tests.html | sed -e "s|FUNCTIONAL_SCENARIOS_NUMBER|${TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT}|" > report_tests_1.html
+  cat report_tests.html | sed -e "s|FUNCTIONAL_SCENARIOS_NUMBER|${TOTAL_NUMBER_OF_SCENARIOS_FROM_PROJECT}|" > report_tests_1.html
   cat report_tests_1.html | sed -e "s|ALL-FEATURES-AND-SCENARIOS-HERE|${FILE}|" > $REPORT_NAME-$PLATFORM_NAME.html
 
   rm -rf report_tests_1.html

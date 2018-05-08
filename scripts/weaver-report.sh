@@ -29,8 +29,8 @@ function setup_envs()
 
 function check_tags_in_config_file
 {
-  check_offical_document_tag
-  check_offical_document_file
+  
+  
   check_tag_for_contract_test
   if [ "$STATUS_CONTRACT_TESTING" = "true" ]; then
     check_folder_of_contract_test
@@ -89,41 +89,40 @@ function get_all_functional_datas()
   do
 
     get_feature_name
-    check_feature_name_in_official_document
-    if [ "$STATUS" = "true" ]; then
+    get_total_number_of_scenarios_by_feature_implemented 
+    get_total_number_of_scenarios_implemented_from_project
+    get_scenario_names_by_feature_implemented
+    get_scenario_names_by_feature
+    get_total_number_of_scenarios_by_feature
+    get_total_number_of_scenarios_from_projet
 
-      get_total_number_of_scenarios_by_feature 
-      get_total_number_of_scenarios_from_project
-      get_scenario_names_by_feature
-      get_total_number_of_scenarios_from_official_document_by_feature
-      get_scenario_names_from_official_document
-      calculate_coverage_by_feature
       
+    calculate_coverage_by_feature
+
+    if [ $TOTAL_NUMBER_OF_SCENARIOS_BY_FEATURE -gt 0 ]; then  
       set_collapse_feature_html
-      
+        
       while read L 
       do 
-        SCENARIO_NAME=$(cat $FILE_WITH_SCENARIO_NAMES_BY_FEATURE | grep "$L")
+        SCENARIO_NAME=$(cat $FILE_WITH_SCENARIO_NAMES_BY_FEATURE_IMPLEMENTED | grep "$L")
         if [ -z "$SCENARIO_NAME" ]; then
           set_scenarios_not_implemented_to_collapse_html
         else
           set_scenarios_implemented_to_collapse_html
         fi
-      done < $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
+      done < $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
 
       rm -rf $FILE_WITH_SCENARIO_NAMES_BY_FEATURE
-      rm -rf $FILE_WITH_SCENARIO_NAMES_FROM_OFFICIAL_DOCUMENT
+      rm -rf $FILE_WITH_SCENARIO_NAMES_BY_FEATURE_IMPLEMENTED
 
       set_end_html
     fi
+    
     i=$(($i+1))
   done < $FILE_WITH_ALL_FEATURES
 
-  get_total_number_of_scenarios_from_official_document
   calculate_project_coverage
   save_functional_test_metric
-  echo "PROJECT COVERAGE: "$PROJECT_COVERAGE
-  echo "OFICCIAL DOCUMENT SCENARIOS NUMBER: "$TOTAL_NUMBER_OF_SCENARIOS_FROM_OFFICIAL_DOCUMENT
   
   rm -rf $FILE_WITH_ALL_FEATURES
  
@@ -343,7 +342,7 @@ function generate_weaver_report
   generate_feature_express
 }
 
-
+echo "Gerando Weaver Report ..."
 setup_envs
 setup_functional_envs
 setup_contract_envs
@@ -351,4 +350,5 @@ setup_develop_envs
 setup_historic_envs
 check_tags_in_config_file
 generate_weaver_report
+echo "Weaver Report gerado com sucesso!"
 
