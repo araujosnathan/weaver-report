@@ -1,0 +1,13 @@
+{
+
+	"pt": {
+		"functional_testing_coverage": "Testes Funcionais",
+		"contract_tesgint_coverage": "Cenários - Testes de Contrato"
+	},
+	"en": {
+		"functional_testing_coverage": "Functional Testing",
+		"contract_tesgint_coverage": "Scenarios - Contract Testing"
+	}
+
+
+}
