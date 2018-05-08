@@ -135,6 +135,13 @@ function calculate_project_coverage
   PROJECT_COVERAGE=$(echo $PROJECT_COVERAGE | tr "," ".")
 }
 
+function generate_feature_express
+{
+    npm install -g feature-express
+    kill -9 `lsof -i:7777 | awk '{ print $2}' | tail -n1` 2> /dev/null
+    nohup feature-express $PATH_TO_FEATURES pt 7777 > /dev/null &
+}
+
 function save_functional_test_metric
 {
     ALL_METRICS=$ALL_METRICS" "$PROJECT_COVERAGE

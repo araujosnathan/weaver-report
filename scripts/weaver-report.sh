@@ -339,6 +339,8 @@ function generate_weaver_report
   rm -rf $REPORT_NAME/index.html
   rm -rf $REPORT_NAME/chart-morris.html
   # rm -rf $REPORT_NAME/js/lib/morris-chart/morris-init.js
+
+  generate_feature_express
 }
 
 
