@@ -1,6 +1,5 @@
 Parameters:
   path_to_features: 
-  path_to_official_document_of_scenarios: 
   path_to_contract_test: 
   platforms: 
   report_name: 
