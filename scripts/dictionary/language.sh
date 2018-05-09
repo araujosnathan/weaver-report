@@ -4,17 +4,17 @@
 
 function check_jq
 {
-    if [ ! type jq 2> /dev/null ]; then
+    CONTENT=$(jq --version 2> /dev/null)
+    if [ -z "$CONTENT" ]; then
         echo -e "\033[31;1mPlease, install jq to continue, like: brew install jq\n \033[m"
         exit 1
-    fi
-    
+    fi   
 }
 function setup_language
 {
     check_jq
     if [ ! -z "$1" ]; then
-
+        
         CONTENT=$(cat dictionary/weaver_languages.json | jq ".$1")
         if [ ! "$CONTENT" = "null" ]; then
             TITLE_REPORT=$(cat dictionary/weaver_languages.json | jq ".$1.title_report" | tr '"' " " | sed 's/ //' | sed 's/ *$//')
