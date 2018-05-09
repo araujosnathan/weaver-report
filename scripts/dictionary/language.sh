@@ -1,18 +1,8 @@
 #!/bin/bash
 
 
-
-function check_jq
-{
-    CONTENT=$(jq --version 2> /dev/null)
-    if [ -z "$CONTENT" ]; then
-        echo -e "\033[31;1mPlease, install jq to continue, like: brew install jq\n \033[m"
-        exit 1
-    fi   
-}
 function setup_language
 {
-    check_jq
     if [ ! -z "$1" ]; then
         
         CONTENT=$(cat dictionary/weaver_languages.json | jq ".$1")
