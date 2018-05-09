@@ -4,10 +4,11 @@
 
 function install_jq
 {
-    if [ ! type jq 2>/dev/null ]; then
+    brew prune 1> /dev/null
+    if [ ! type jq 2> /dev/null ]; then
         brew install jq
     fi
-    brew link jq
+    brew unlink jq 1> /dev/null && brew link jq 1> /dev/null
 }
 function setup_language
 {
