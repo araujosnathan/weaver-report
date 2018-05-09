@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source dependencies/install_dependencies.sh
 source dictionary/language.sh
 source functional/testing_data.sh
 source functional/setting_html.sh
@@ -345,8 +346,9 @@ function generate_weaver_report
 }
 
 
-
-echo "Gerando Weaver Report ..."
+echo "Checking dependecies ..."
+check_all_dependencies
+echo "Generating Weaver Report ..."
 setup_language $1
 set_language_in_template
 setup_envs
@@ -356,5 +358,5 @@ setup_develop_envs
 setup_historic_envs
 check_tags_in_config_file
 generate_weaver_report
-echo "Weaver Report gerado com sucesso!"
+echo "Weaver Report generated with successful!"
 
