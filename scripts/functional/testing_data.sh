@@ -115,7 +115,12 @@ function calculate_project_coverage
 
 function generate_feature_express
 {
-    npm install -g feature-express
+    if [ ! type npm 2>/dev/null ]; then
+        brew install npm
+    fi
+    if [ ! type feature-express 2>/dev/null ]; then
+        npm install -g feature-express
+    fi
     kill -9 `lsof -i:7777 | awk '{ print $2}' | tail -n1` 2> /dev/null
     nohup feature-express $PATH_TO_FEATURES pt 7777 > /dev/null &
 }

@@ -4,7 +4,10 @@
 
 function install_jq
 {
-    brew install jq
+    if [ ! type jq 2>/dev/null ]; then
+        brew install jq
+    fi
+    brew link jq
 }
 function setup_language
 {
