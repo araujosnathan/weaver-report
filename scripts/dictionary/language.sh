@@ -2,17 +2,17 @@
 
 
 
-function install_jq
+function check_jq
 {
-    brew prune 1> /dev/null
     if [ ! type jq 2> /dev/null ]; then
-        brew install jq
+        echo -e "\033[31;1mPlease, install jq to continue, like: brew install jq\n \033[m"
+        exit 1
     fi
-    brew unlink jq 1> /dev/null && brew link jq 1> /dev/null
+    
 }
 function setup_language
 {
-    install_jq
+    check_jq
     if [ ! -z "$1" ]; then
 
         CONTENT=$(cat dictionary/weaver_languages.json | jq ".$1")
