@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source dictionary/language.sh
 source functional/testing_data.sh
 source functional/setting_html.sh
 source contract/endpoints_data.sh
@@ -216,7 +217,7 @@ function set_metrics_in_template()
 {
   set_functional_test_data_in_html
   set_contract_test_data_in_html
-  set_unit_test_data_in_html
+  # set_unit_test_data_in_html
   set_recent_sprints_data_in_html
   # # FILE_SPRINT=$(cat $FILE_METRICS_HTML)
   # # FILE_SPRINT=`echo ${FILE_SPRINT} | tr '\n' "\\n"`
@@ -272,6 +273,7 @@ function genenerate_report_by_platform()
   # cp chart-morris-$PLATFORM_NAME.html $REPORT_NAME/
   
   rm -rf $REPORT_NAME-$PLATFORM_NAME.html
+  cp ../template/index2.html ../template/index.html 
   # rm -rf chart-morris-$PLATFORM_NAME.html
   # rm -rf $FILE_BUGS_FLAGGED
   # rm -rf report_tests.html
@@ -342,7 +344,11 @@ function generate_weaver_report
   generate_feature_express
 }
 
+
+
 echo "Gerando Weaver Report ..."
+setup_language $1
+set_language_in_template
 setup_envs
 setup_functional_envs
 setup_contract_envs

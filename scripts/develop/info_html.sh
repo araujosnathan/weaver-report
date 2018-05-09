@@ -2,7 +2,7 @@
 
 function get_danger_button_of_unit_test
 {
-  BUTTON_UNIT_TEST="<button type='button' class='btn btn-danger m-b-10 m-l-5' id='toastr-unit-tests-danger-bottom-full-width'>Testes Unitários</button>"
+  BUTTON_UNIT_TEST="<button type='button' class='btn btn-danger m-b-10 m-l-5' id='toastr-unit-tests-danger-bottom-full-width'>$UNIT_TEST_WARNING_BUTTON</button>"
 }
 
 function set_unit_test_data_in_html

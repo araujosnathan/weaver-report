@@ -1,0 +1,43 @@
+{
+
+	"pt": {
+                "title_report": "Garantia de Qualidade",
+                "unit_test_warning_button":"Testes de Contrato",
+                "contract_test_warning_button":"Testes Unitários",
+                "platform_menu_label": "Platformas",
+                "graphic_menu_label": "Gráficos",
+                "report_label": "Relatório de Qualidade",
+                "functional_testing_coverage": "Testes Funcionais",
+                "functional_scenarios_card": "Total de Cenários de testes",
+                "contract_testing_coverage": "Cenários - Testes de Contrato",
+                "contract_endpoints_card": "Número de Endpoints",
+                "feature_express_button": "Visualizar Feature Express",
+                "coverage_by_feature_title": "Cobertura das Funcionalidades",
+                "title_table_sprints": "Sprints Recentes",
+                "name_column_table": "Nome",
+                "unit_test_column_table": "Testes Unitários",
+                "functional_column_table":"Testes Funcionais",
+                "contract_test_column_table": "Testes de Contrato"
+
+	},
+	"en": {
+		"title_report": "Quality Assurance",
+                "platform_menu_label": "Platforms",
+                "graphic_menu_label": "Graphics",
+                "report_label": "Quality Report",
+                "functional_testing_coverage": "Functional Tests",
+                "functional_scenarios_card": "Total Test Scenarios",
+                "contract_testing_coverage": "Scenarios - Contract Tests",
+                "contract_endpoints_card": "Number of Endpoints",
+                "feature_express_button": "View Feature Express",
+                "coverage_by_feature_title": "Feature Coverage",
+                "title_table_sprints": "Recent Sprints",
+                "name_column_table": "Name",
+                "unit_test_column_table": "Unit Tests",
+                "functional_column_table":"Functional Tests",
+                "contract_test_column_table": "Contract Tests"
+
+	}
+
+
+}
