@@ -1,8 +1,14 @@
 #!/bin/bash
 
 
+
+function install_jq
+{
+    brew install jq
+}
 function setup_language
 {
+    install_jq
     if [ ! -z "$1" ]; then
 
         CONTENT=$(cat dictionary/weaver_languages.json | jq ".$1")
