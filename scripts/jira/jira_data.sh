@@ -5,6 +5,7 @@ function setup_jira_envs
     JIRA_SERVER=$(cat config.yml | grep jira_server | awk '{print $2}')
     JIRA_USER=$(cat config.yml | grep jira_user | awk '{print $2}')
     JIRA_PASSWORD=$(cat config.yml | grep jira_password | awk '{print $2}')
+    JIRA_ANDROID=$(cat config.yml | grep jira_android | awk '{print $2}')
 }
 
 function check_tag_jira_server
@@ -57,5 +58,17 @@ function check_tag_jira_password
         fi
     fi
 
+}
+
+function check_tag_jira_android
+{
+    CONTENT=$(cat config.yml | grep jira_android)
+    if [ -z "$CONTENT" ]; then
+        CONTENT_FILE=$(cat config.yml)
+        if [ $CONTENT_FILE =~ "jira_andr" ]; then
+            echo -e "\033[33;1mDo you mean? jira_android\033[m"
+            exit 1
+        fi
+    fi
 }
  

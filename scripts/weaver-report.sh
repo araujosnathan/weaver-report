@@ -220,8 +220,7 @@ function set_metrics_in_template()
   set_contract_test_data_in_html
   # set_unit_test_data_in_html
   set_recent_sprints_data_in_html
-  # # FILE_SPRINT=$(cat $FILE_METRICS_HTML)
-  # # FILE_SPRINT=`echo ${FILE_SPRINT} | tr '\n' "\\n"`
+ 
   # # FILE_BUGS=$(cat $FILE_BUGS_JS)
   # # FILE_BUGS=`echo ${FILE_BUGS} | tr '\n' "\\n"`
   
@@ -312,6 +311,12 @@ function generate_weaver_report
     then
       get_unit_test_metric_android
       save_android_unit_test
+      check_tag_jira_android
+      if [ "$JIRA_ANDROID" = "true" ];
+      then
+        python3 jira/main_android.py
+      fi
+      
     fi
  
     get_all_functional_datas
