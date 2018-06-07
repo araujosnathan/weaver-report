@@ -14,7 +14,8 @@ function set_chart_init
 function set_bugs_flagged_chart
 {
   echo "<div class='recent-comment'>" >> $FILE_BUGS_FLAGGED
-  echo "<div class='media'>" >> $FILE_BUGS_FLAGGED
+  echo "<div class='media'>" >> $
+  
   echo "<div class='media-left'>" >> $FILE_BUGS_FLAGGED
   echo "<a href='#'><img alt='...' src='images/report_bug_flagged.png' class='media-object'></a>" >> $FILE_BUGS_FLAGGED
   echo "</div>" >> $FILE_BUGS_FLAGGED

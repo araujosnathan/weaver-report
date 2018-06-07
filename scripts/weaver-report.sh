@@ -157,13 +157,21 @@ function set_metrics_in_template()
   
 }
 
-function generate_bug_report_by_platform()
+
+function genenerate_report_by_platform()
 {
+ 
+  echo "AQUI"
   BUGS_FLAGGED_CONTENT=$(cat $FILE_BUGS_FLAGGED)
+  echo "FOI"
   BUGS_FLAGGED_CONTENT=`echo ${BUGS_FLAGGED_CONTENT} | tr '\n' "\\n"`
 
+
+  cat $REPORT_NAME-$PLATFORM_NAME.html | sed -e "s|REPORT_PLATFORM_NAME|${PLATFORM_REPORT}|" > report_tests.html
   cat chart-morris-$PLATFORM_NAME.html | sed -e "s|REPORT_PLATFORM_NAME|${PLATFORM_REPORT}|" > report_chart.html 
   
+  cat report_tests.html | sed -e "s|BUGSCOMMENTEND|-->|" > report_tests_1.html
+  cat report_tests_1.html | sed -e "s|BUGSCOMMENT|--|" > report_tests.html
   cat report_tests.html | sed -e "s|BUGS_PLATFORM_NAME|${BUG_PLATFORM_REPORT}|" > report_tests_1.html
   cat report_chart.html | sed -e "s|BUGS_PLATFORM_NAME|${BUG_PLATFORM_REPORT}|" > report_chart_1.html
   set_chart_init
@@ -172,46 +180,20 @@ function generate_bug_report_by_platform()
   
   rm -rf chart-morris-$PLATFORM_NAME.html
 
+  mv report_tests_1.html $REPORT_NAME-$PLATFORM_NAME.html
   mv report_chart_1.html chart-morris-$PLATFORM_NAME.html
-  cp chart-morris-$PLATFORM_NAME.html $REPORT_NAME/
-
-  rm -rf $FILE_BUGS_FLAGGED
-  rm -rf report_tests.html
-  rm -rf report_chart_1.html
-  rm -rf report_chart.html
-}
-
-function genenerate_report_by_platform()
-{
- 
-  # BUGS_FLAGGED_CONTENT=$(cat $FILE_BUGS_FLAGGED)
-  # BUGS_FLAGGED_CONTENT=`echo ${BUGS_FLAGGED_CONTENT} | tr '\n' "\\n"`
-
-
-  cat $REPORT_NAME-$PLATFORM_NAME.html | sed -e "s|REPORT_PLATFORM_NAME|${PLATFORM_REPORT}|" > report_tests.html
-  # cat chart-morris-$PLATFORM_NAME.html | sed -e "s|REPORT_PLATFORM_NAME|${PLATFORM_REPORT}|" > report_chart.html 
-  
-  # cat report_tests.html | sed -e "s|BUGS_PLATFORM_NAME|${BUG_PLATFORM_REPORT}|" > report_tests_1.html
-  # cat report_chart.html | sed -e "s|BUGS_PLATFORM_NAME|${BUG_PLATFORM_REPORT}|" > report_chart_1.html
-  # set_chart_init
-  # cat report_chart_1.html | sed -e "s|CHART_BUG_INIT|${CHART_INIT}|" > report_chart.html
-  # cat report_chart.html | sed -e "s|LIST_FLAGGED_BUGS|${BUGS_FLAGGED_CONTENT}|" > report_chart_1.html
-  
-  # rm -rf chart-morris-$PLATFORM_NAME.html
-
-  mv report_tests.html $REPORT_NAME-$PLATFORM_NAME.html
-  # mv report_chart_1.html chart-morris-$PLATFORM_NAME.html
 
   cp $REPORT_NAME-$PLATFORM_NAME.html $REPORT_NAME/
-  # cp chart-morris-$PLATFORM_NAME.html $REPORT_NAME/
+  cp chart-morris-$PLATFORM_NAME.html $REPORT_NAME/
   
   rm -rf $REPORT_NAME-$PLATFORM_NAME.html
   cp ../template/index2.html ../template/index.html 
-  # rm -rf chart-morris-$PLATFORM_NAME.html
-  # rm -rf $FILE_BUGS_FLAGGED
-  # rm -rf report_tests.html
-  # rm -rf report_chart_1.html
-  # rm -rf report_chart.html
+  rm -rf chart-morris-$PLATFORM_NAME.html
+  rm -rf $FILE_BUGS_FLAGGED
+  rm -rf report_tests.html
+  rm -rf report_tests_1.html
+  rm -rf report_chart_1.html
+  rm -rf report_chart.html
 
 }
 
@@ -283,7 +265,7 @@ function generate_weaver_report
   count=0
   while [ $count -lt $LENGHT ]; do
     PLATFORM_NAME=${ALL_PLATFORMS[$count]}
-    # get_all_bugs_flagged
+    get_all_bugs_flagged
     genenerate_report_by_platform
     let count++
   done
@@ -292,7 +274,8 @@ function generate_weaver_report
   rm -rf $REPORT_NAME/index.html
   rm -rf $REPORT_NAME/chart-morris.html
   rm -rf $REPORT_NAME/js/lib/morris-chart/morris-init.js
-
+  rm -rf $FILE_SPRINT_BUGS_FLAGGED
+  rm -rf $FILE_CURRENT_BUGS_METRIC
   generate_feature_express
 }
 
