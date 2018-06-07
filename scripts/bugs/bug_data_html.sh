@@ -14,8 +14,8 @@ function set_chart_init
 function set_bugs_flagged_chart
 {
   echo "<div class='recent-comment'>" >> $FILE_BUGS_FLAGGED
-  echo "<div class='media'>" >> $
-  
+  echo "<div class='media'>" >> $FILE_BUGS_FLAGGED
+
   echo "<div class='media-left'>" >> $FILE_BUGS_FLAGGED
   echo "<a href='#'><img alt='...' src='images/report_bug_flagged.png' class='media-object'></a>" >> $FILE_BUGS_FLAGGED
   echo "</div>" >> $FILE_BUGS_FLAGGED
@@ -68,6 +68,7 @@ function set_recent_bugs_sprint_in_html()
 
 function get_all_bugs_flagged()
 {
+  touch $FILE_BUGS_FLAGGED
   cat $FILE_SPRINT_BUGS_FLAGGED | grep $PLATFORM_NAME >> sprint_historic.txt
   while read LINE 
   do

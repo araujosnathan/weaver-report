@@ -161,9 +161,7 @@ function set_metrics_in_template()
 function genenerate_report_by_platform()
 {
  
-  echo "AQUI"
   BUGS_FLAGGED_CONTENT=$(cat $FILE_BUGS_FLAGGED)
-  echo "FOI"
   BUGS_FLAGGED_CONTENT=`echo ${BUGS_FLAGGED_CONTENT} | tr '\n' "\\n"`
 
 
