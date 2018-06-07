@@ -45,7 +45,9 @@ function check_tags_in_config_file
   if [ "$ANDROID_STATUS_UNIT_TEST" = "true" ]; then
     check_file_of_android_unit_test
   fi
-  check_tag_jira_server
+  # check_tag_jira_server
+  check_tag_jira_android
+  check_tag_jira_ios
 }
 
 
@@ -292,7 +294,6 @@ function generate_weaver_report
   ALL_PLATFORMS=($(echo $PLATFORMS | tr "," "\n"))
   LENGHT=${#ALL_PLATFORMS[*]}
   count=0
-  # python3 main.py
   while [ $count -lt $LENGHT ]; do
     PLATFORM_NAME=${ALL_PLATFORMS[$count]}
     
@@ -307,16 +308,18 @@ function generate_weaver_report
     then
       get_unit_test_metric_ios
       save_ios_unit_test
+      if [ "$JIRA_IOS" = "true" ];
+      then
+        python3 jira/main_ios.py
+      fi
     elif [ "$PLATFORM_NAME" = "android" ];
     then
       get_unit_test_metric_android
       save_android_unit_test
-      check_tag_jira_android
       if [ "$JIRA_ANDROID" = "true" ];
       then
         python3 jira/main_android.py
       fi
-      
     fi
  
     get_all_functional_datas
@@ -361,6 +364,7 @@ setup_functional_envs
 setup_contract_envs
 setup_develop_envs
 setup_historic_envs
+setup_jira_envs
 check_tags_in_config_file
 generate_weaver_report
 echo "Weaver Report generated with successful!"
