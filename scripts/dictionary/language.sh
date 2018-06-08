@@ -24,6 +24,10 @@ function setup_language
             UNIT_TEST_COLUMN_TABLE=$(cat dictionary/weaver_languages.json | jq ".$1.unit_test_column_table" | tr '"' " " | sed 's/ //' | sed 's/ *$//')
             FUNCTIONAL_COLUMN_TABLE=$(cat dictionary/weaver_languages.json | jq ".$1.functional_column_table" | tr '"' " " | sed 's/ //' | sed 's/ *$//')
             CONTRACT_COLUMN_TABLE=$(cat dictionary/weaver_languages.json | jq ".$1.contract_test_column_table" | tr '"' " " | sed 's/ //' | sed 's/ *$//')
+            REPORT_BUG_LABEL=$(cat dictionary/weaver_languages.json | jq ".$1.report_bug_label" | tr '"' " " | sed 's/ //' | sed 's/ *$//')
+            BUG_SPRINT_LABEL=$(cat dictionary/weaver_languages.json | jq ".$1.bug_sprint_label" | tr '"' " " | sed 's/ //' | sed 's/ *$//')
+            ATTENTION_POINT_LABEL=$(cat dictionary/weaver_languages.json | jq ".$1.attention_point_label" | tr '"' " " | sed 's/ //' | sed 's/ *$//') 
+            BUGS_EVOLUTION_LABEL=$(cat dictionary/weaver_languages.json | jq ".$1.bugs_evolution_label" | tr '"' " " | sed 's/ //' | sed 's/ *$//')
         else
             echo -e "\033[31;1mNot found language '$1'\nPlease, set correct language parameter!\n \033[m"
             exit 1
@@ -55,10 +59,25 @@ function set_language_in_template
         sed -e "s|functional_column_table|${FUNCTIONAL_COLUMN_TABLE}|" | \
         sed -e "s|contract_test_column_table|${CONTRACT_COLUMN_TABLE}|" > report_tests.html
     
+    cat ../template/chart-morris.html | \
+        sed -e "s|title_report|${TITLE_REPORT}|" | \
+        sed -e "s|platform_menu_label|${PLATFORMS_MENU_LABEL}|" | \
+        sed -e "s|graphic_menu_label|${GRAPHIC_MENU_LABEL}|" | \
+        sed -e "s|report_bug_label|${REPORT_BUG_LABEL}|" | \
+        sed -e "s|bug_sprint_label|${BUG_SPRINT_LABEL}|" | \
+        sed -e "s|attention_point_label|${ATTENTION_POINT_LABEL}|" | \
+        sed -e "s|bugs_evolution_label|${BUGS_EVOLUTION_LABEL}|" > report_tests_1.html
+
     
     cp ../template/index.html ../template/index2.html 
     rm -rf ../template/index.html
     mv report_tests.html index.html
     cp index.html ../template/
     rm -rf index.html
+
+    cp ../template/chart-morris.html ../template/chart-morris2.html
+    rm -rf ../template/chart-morris.html
+    mv report_tests_1.html chart-morris.html
+    cp chart-morris.html ../template
+    rm -rf chart-morris.html
 }

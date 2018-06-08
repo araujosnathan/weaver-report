@@ -17,7 +17,11 @@
                 "name_column_table": "Nome",
                 "unit_test_column_table": "Testes Unitários",
                 "functional_column_table":"Testes Funcionais",
-                "contract_test_column_table": "Testes de Contrato"
+                "contract_test_column_table": "Testes de Contrato",
+                "report_bug_label": "Relatório de Bugs",
+                "bug_sprint_label": "Bugs da Sprint",
+                "attention_point_label": "Ponto de Atenção",
+                "bugs_evolution_label": "Evolução dos Bugs"
 
 	},
 	"en": {
@@ -35,7 +39,11 @@
                 "name_column_table": "Name",
                 "unit_test_column_table": "Unit Tests",
                 "functional_column_table":"Functional Tests",
-                "contract_test_column_table": "Contract Tests"
+                "contract_test_column_table": "Contract Tests",
+                "report_bug_label": "Bugs Report",
+                "bug_sprint_label": "Sprint Bugs",
+                "attention_point_label": "Attention Point",
+                "bugs_evolution_label": "Evolution of Bugs"
 
 	}
 
