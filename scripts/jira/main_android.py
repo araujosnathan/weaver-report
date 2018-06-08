@@ -3,20 +3,22 @@ from class_bug import Bug
 import re
 
 
-options = { 'server': '' }
-jira = JIRA(options, basic_auth=('', ''))
+options = { 'server': 'https://projetoodete.atlassian.net/' }
+jira = JIRA(options, basic_auth=('nathanael.araujo@concrete.com.br', '#Keyboard123..#'))
 
-query_backlog = ''
-query_sprint_bug_unresolved = ''
-query_sprint_bug_fixed = ''
-query_backlog_flagged = ''
-query_sprint_bug_flagged = ''
+
+query_backlog = 'project = CB AND issuetype = Bug AND status != Done  AND labels = Android AND Sprint is EMPTY ORDER BY created DESC'
+query_sprint_bug_unresolved = 'project = CB AND issuetype = Bug AND status != Done  AND labels = Android AND Sprint in openSprints()  ORDER BY created DESC'
+query_sprint_bug_fixed = 'project = CB AND issuetype = Bug AND status = Done  AND labels = Android AND Sprint in openSprints() ORDER BY created DESC'
+query_backlog_flagged = 'project = CB AND issuetype = Bug AND status != Done  AND Flagged = impedimento AND Sprint is EMPTY AND labels = Android ORDER BY created DESC'
+query_sprint_bug_flagged = 'project = CB AND issuetype = Bug AND status != Done  AND Flagged = impedimento AND labels = Android AND Sprint in openSprints() ORDER BY created DESC'
+
 
 bugAndroid = Bug(jira, query_backlog, query_sprint_bug_unresolved, query_sprint_bug_fixed, query_sprint_bug_flagged, query_backlog_flagged)
-print(bugAndroid.get_total_backlog())
-print(bugAndroid.get_total_fixed())
-print(bugAndroid.get_jira_bugs_flagged())
-bugAndroid.print_list_bugs_flagged()
+# print(bugAndroid.get_total_backlog())
+# print(bugAndroid.get_total_fixed())
+# print(bugAndroid.get_jira_bugs_flagged())
+# bugAndroid.print_list_bugs_flagged()
 
 with open('bugs_metric.txt', 'a') as the_file:
     the_file.write('android ' + str(bugAndroid.get_total_backlog()) + " " + str(bugAndroid.get_total_fixed()) + " " + str(bugAndroid.get_jira_bugs_flagged()) + "\n")

@@ -29,9 +29,9 @@ function set_bugs_flagged_chart
 
 function set_bugs_sprints_js()
 {
-    echo "{" >> $FILE_BUGS_JS
-    echo "s: '$REPORT_NAME_LABEL'," >> $FILE_BUGS_JS
-    echo "bl: $BACKLOG_NUMBER," >> $FILE_BUGS_JS
+  echo "{" >> $FILE_BUGS_JS
+  echo "s: '$REPORT_NAME_LABEL'," >> $FILE_BUGS_JS
+  echo "bl: $BACKLOG_NUMBER," >> $FILE_BUGS_JS
 	echo "fx: $BUG_FIXED_NUMBER," >> $FILE_BUGS_JS
 	echo "fl: $BUG_FLAGGED_NUMBER" >> $FILE_BUGS_JS
     if [ $COUNT -gt 1 ] && [ $MAX -lt $COUNT ];
