@@ -2,15 +2,14 @@ from jira import JIRA
 from class_bug import Bug
 import re
 
-options = { 'server': 'https://projetoodete.atlassian.net/' }
-jira = JIRA(options, basic_auth=('nathanael.araujo@concrete.com.br', '#Keyboard123..#'))
+options = { 'server': 'URL' }
+jira = JIRA(options, basic_auth=('user', 'pass'))
 
-query_backlog = 'project = CB AND issuetype = Bug AND status != Done  AND labels = iOS AND Sprint is EMPTY ORDER BY created DESC'
-query_sprint_bug_unresolved = 'project = CB AND issuetype = Bug AND status != Done  AND labels = iOS AND Sprint in openSprints()  ORDER BY created DESC'
-query_sprint_bug_fixed = 'project = CB AND issuetype = Bug AND status = Done  AND labels = iOS AND Sprint in openSprints() ORDER BY created DESC'
-query_backlog_flagged = 'project = CB AND issuetype = Bug AND status != Done  AND Flagged = impedimento AND Sprint is EMPTY AND labels = iOS ORDER BY created DESC'
-query_sprint_bug_flagged = 'project = CB AND issuetype = Bug AND status != Done  AND Flagged = impedimento AND labels = iOS AND Sprint in openSprints() ORDER BY created DESC'
-
+query_backlog = ''
+query_sprint_bug_unresolved = ''
+query_sprint_bug_fixed = ''
+query_backlog_flagged = ''
+query_sprint_bug_flagged = ''
 
 bugiOS =  Bug(jira, query_backlog, query_sprint_bug_unresolved, query_sprint_bug_fixed, query_sprint_bug_flagged, query_backlog_flagged)
 # print(bugiOS.get_total_backlog())
