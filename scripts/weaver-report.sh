@@ -259,7 +259,11 @@ function generate_weaver_report
   count=0
   while [ $count -lt $LENGHT ]; do
     PLATFORM_NAME=${ALL_PLATFORMS[$count]}
-    get_all_bugs_flagged
+    CONTENT=$(echo $BUG_CONTROL | grep $PLATFORM_NAME)
+    if [ ! -z  "$CONTENT" ];
+    then
+      get_all_bugs_flagged
+    fi
     genenerate_report_by_platform
     let count++
 
