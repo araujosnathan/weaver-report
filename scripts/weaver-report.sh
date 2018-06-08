@@ -183,6 +183,7 @@ function genenerate_report_by_platform()
   rm -rf $FILE_BUGS_FLAGGED
   rm -rf $REPORT_NAME-$PLATFORM_NAME.html
   cp ../template/index2.html ../template/index.html 
+  cp ../template/chart-morris2.html ../template/chart-morris.html
   rm -rf report_tests.html
   rm -rf report_tests_1.html
  
