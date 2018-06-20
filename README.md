@@ -29,16 +29,16 @@ eng - English
 
 ## Setting up Config file: `config.yml`
 These parameters below can be used: <br>
-| Parameters                | Content   |
-|---------------------------|:--------:|
-|path_to_features:           | set up full path to feature folder. Ex.: "/Users/MyProject/features/"
-|path_to_contract_tests:     | set up full path to contract tests folder. Ex.: "/Users/MyProject/test_files/"
-|platforms:                  | set up tags of the platforms being used in the scenario writing files in cucumber. Ex: If scenario is automated, set @android tag in *.feature* file and in *config.yml* set "android". If you have more platforms, set all tags. Ex: "android, ios, web"
-|report_name:                | Set up report name or can used sprint name for better view in evolution tables and graphics. Ex.: "Sprint Dev 01"
-|ios_unit_test_report:       | Set up full path to iOS unit test report of Slather. Ex.: "/Users/DevProject/reports/index.html"
-|android_unit_test_report   | Set up full path to Android unit test report of Jacoco. Ex.: "/Users/DevProject/reports/index.html"
-|jira_android:               | Set up this tag if you want to get Android bugs metrics from jira. Ex.: "true"
-|jira_ios:                  | Set up this tag if you want to get iOS bugs metrics from jira. Ex.: "true"
+| Parameters                            | Content                                                                                       |
+|---------------------------            |:--------:                                                                                     |
+|path_to_features:                      | set up full path to feature folder. Ex.: "/Users/MyProject/features/"                         |
+|path_to_contract_tests:                | set up full path to contract tests folder. Ex.: "/Users/MyProject/test_files/"                |
+|platforms:                             | set up tags of the platforms being used in the scenario writing files in cucumber. Ex: If scenario is automated, set @android tag in *.feature* file and in *config.yml* set "android". If you have more platforms, set all tags. Ex: "android, ios, web"                                                                                                                 |
+|report_name:                           | Set up report name or can used sprint name for better view in evolution tables and graphics. Ex.: "Sprint Dev 01"                                                                                                                    |
+|ios_unit_test_report:                  | Set up full path to iOS unit test report of Slather. Ex.: "/Users/DevProject/reports/index.html"                                                                                                  |
+|android_unit_test_report               | Set up full path to Android unit test report of Jacoco. Ex.: "/Users/DevProject/reports/index.html"                                                                                                  |
+|jira_android:                          | Set up this tag if you want to get Android bugs metrics from jira. Ex.: "true"                |
+|jira_ios:                              | Set up this tag if you want to get iOS bugs metrics from jira. Ex.: "true"                    |
 
 
 
