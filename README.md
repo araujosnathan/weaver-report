@@ -30,7 +30,7 @@ eng - English
 ## Setting up Config file: `config.yml`
 These parameters below can be used: <br>
 | Parameters                            | Content                                                                                       |
-|---------------------------            |:--------:                                                                                     |
+|-------------------------------------- |:--------:                                                                                     |
 |path_to_features:                      | set up full path to feature folder. Ex.: "/Users/MyProject/features/"                         |
 |path_to_contract_tests:                | set up full path to contract tests folder. Ex.: "/Users/MyProject/test_files/"                |
 |platforms:                             | set up tags of the platforms being used in the scenario writing files in cucumber. Ex: If scenario is automated, set @android tag in *.feature* file and in *config.yml* set "android". If you have more platforms, set all tags. Ex: "android, ios, web"                                                                                                                 |
@@ -41,7 +41,11 @@ These parameters below can be used: <br>
 |jira_ios:                              | Set up this tag if you want to get iOS bugs metrics from jira. Ex.: "true"                    |
 
 
-
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
 
 # View JIRA Bugs
 
