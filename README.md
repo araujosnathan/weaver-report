@@ -29,10 +29,6 @@ eng - English
 
 ## Setting up Config file: `config.yml`
 These parameters below can be used: <br>
-| Parameters                            | Content                                                                                       |
-|-------------------------------------- |:--------:                                                                                     |
-
-
 
 | Parameters        | Content           |
 | ------------- |:-------------:|
